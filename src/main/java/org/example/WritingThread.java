@@ -31,6 +31,10 @@ public class WritingThread extends Thread {
 			while(true) {
 				String tmp = scanner.nextLine();
 				if(name.equals(currentClient.getName())) {
+					if(tmp.contains(" ")) {
+						System.out.println("No Space");
+						continue;
+					}
 					writer.println(tmp);
 				}
 				else {

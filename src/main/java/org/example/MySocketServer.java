@@ -1,6 +1,7 @@
 package org.example;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -10,6 +11,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
 import org.example.game.Words;
@@ -41,7 +43,7 @@ public class MySocketServer extends Thread {
       System.out.println("Server : " + socket.getInetAddress() + " Ip Connected");
 
       DataBase db = new DataBase("jdbc:postgresql://localhost:5432/kkutudb", "postgres",
-          "");
+          Passwd.getPasswd());
 
       db.connect();
       wordSetting.setRoundFlag(true);
@@ -60,10 +62,7 @@ public class MySocketServer extends Thread {
       readValue = reader.readLine();
 
       while (readValue != null && wordSetting.getRoundFlag()) {
-        if (!wordSetting.getRoundFlag()) {
-          System.out.println("Break");
-          break;
-        }
+        if(readValue.equals("Game Started")) break;
         System.out.println("Current Client : " + queue.getCurrentClientName());
         //클라이언트가 접속했을때 현재 클라이언트를 알려주는 코드
         for (int i = 0; i < list.size(); i++) {
@@ -76,10 +75,9 @@ public class MySocketServer extends Thread {
           identify = true;
           writer.println(name + " Connected");
           queue.addClient(name);
-          continue;
         }
         //초기 방장을 위한 코드
-        if (readValue.equals("Start") && name.equals(queue.getCurrentClientName())) {
+        else if (readValue.equals("Start") && name.equals(queue.getCurrentClientName())) {
           readValue = reader.readLine();
           round = Integer.parseInt(readValue);
           wordSetting.setRoundFlag(false);
@@ -95,6 +93,7 @@ public class MySocketServer extends Thread {
             PrintWriter printWriter = new PrintWriter(out, true);
             printWriter.println("Round : " + round);
             printWriter.println("Start Word : " + startWord);
+            printWriter.println("Game Started");
           }
           break;
         } else {
@@ -105,13 +104,17 @@ public class MySocketServer extends Thread {
             printWriter.println(name + " : " + readValue);
           }
         }
-        readValue = reader.readLine();
+        if (!wordSetting.getRoundFlag()) {
+          System.out.println("Break");
+          break;
+        }
+        else readValue = reader.readLine();
       }
       for (int i = wordSetting.getRound(); i < wordSetting.getFinalRound();) {
         String currentWord = null;
         char lastChar;
         if(wordSetting.getLastChar() == ' ') {
-          lastChar = wordSetting.getStartWord().charAt(wordSetting.getStartWord().length() - 1);
+          lastChar = wordSetting.getStartWord().charAt(i);
           wordSetting.setLastChar(lastChar);
         }
         else {
@@ -128,6 +131,7 @@ public class MySocketServer extends Thread {
           }
         }
         while ((readValue = reader.readLine()) != null) {
+          if(readValue.equals("Game Started")) continue;
           //클라이언트가 접속했을때 현재 클라이언트를 알려주는 코드
           //System.out.println("Current Client : " + queue.getCurrentClientName());
           for (int j = 0; j < list.size(); j++) {

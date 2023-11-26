@@ -27,12 +27,14 @@ public class ListeningThread extends Thread {
 					String name = tmp.substring(17);
 					if(!name.equals(currentClient.getName())) currentClient.setName(name);
 				}
+				/*
 				else if(tmp.contains("Game Started")) {
 					//확인했다는 메시지를 보냄
 					OutputStream out = socket.getOutputStream();
 					PrintWriter writer = new PrintWriter(out, true);
 					writer.println("Game Started");
 				}
+				 */
 				else System.out.println(tmp);
 			}
 			

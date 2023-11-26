@@ -11,9 +11,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Scanner;
 import java.util.Timer;
-import java.util.TimerTask;
+import org.example.game.TimerEvent;
 import org.example.game.Words;
 
 public class MySocketServer extends Thread {
@@ -25,11 +24,12 @@ public class MySocketServer extends Thread {
   private Socket socket = null;
 
 
-  private int round;
-
   private ArrayList<String> words = new ArrayList<String>();
 
   private String startWord = null;
+
+  private DataBase db = new DataBase("jdbc:postgresql://localhost:5432/kkutudb", "postgres",
+      Passwd.getPasswd());
 
 
   public MySocketServer(Socket socket) {
@@ -41,15 +41,10 @@ public class MySocketServer extends Thread {
   public void run() {
     try {
       System.out.println("Server : " + socket.getInetAddress() + " Ip Connected");
-
-      DataBase db = new DataBase("jdbc:postgresql://localhost:5432/kkutudb", "postgres",
-          Passwd.getPasswd());
-
       db.connect();
-      wordSetting.setRoundFlag(true);
+      wordSetting.setRoundFlag(false);
       InputStream input = socket.getInputStream();
       BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-
       OutputStream out = socket.getOutputStream();
       PrintWriter writer = new PrintWriter(out, true);
 
@@ -60,105 +55,71 @@ public class MySocketServer extends Thread {
       boolean identify = false;
 
       readValue = reader.readLine();
+      name = readValue;
+      queue.addClient(name);
 
-      while (readValue != null && wordSetting.getRoundFlag()) {
-        if(readValue.equals("Game Started")) break;
+      writer.println(name + " Connected");
+
+      while ((readValue = reader.readLine()) != null) {
+        Timer timer = new Timer();
+        TimerEvent timerEvent = new TimerEvent(60);
+        if(wordSetting.getIsEnd()) {
+          for(int i = 0; i  < list.size(); i++) {
+            PrintWriter writer2 = new PrintWriter(list.get(i).getOutputStream(), true);
+            writer2.println("Game Ended");
+            writer2.println("Loser : " + queue.getCurrentClientName());
+          }
+          break;
+        }
         System.out.println("Current Client : " + queue.getCurrentClientName());
-        //클라이언트가 접속했을때 현재 클라이언트를 알려주는 코드
-        for (int i = 0; i < list.size(); i++) {
-          out = list.get(i).getOutputStream();
-          PrintWriter printWriter = new PrintWriter(out, true);
-          printWriter.println("Current Client : " + queue.getCurrentClientName());
-        }
-        if (!identify) {
-          name = readValue;
-          identify = true;
-          writer.println(name + " Connected");
-          queue.addClient(name);
-        }
-        //초기 방장을 위한 코드
-        else if (readValue.equals("Start") && name.equals(queue.getCurrentClientName())) {
-          readValue = reader.readLine();
-          round = Integer.parseInt(readValue);
-          wordSetting.setRoundFlag(false);
-          words = db.selectWords(round);
+        if(wordSetting.getRoundFlag() && name.equals(queue.getCurrentClientName())) {
+          for(int i = 0; i  < list.size(); i++) {
+            PrintWriter writer2 = new PrintWriter(list.get(i).getOutputStream(), true);
+            writer2.println("Current Client : " + queue.getCurrentClientName());
+          }
+          Game game = Game.getInstance();
+          if(game.check(readValue)) {
+            for(int i = 0; i  < list.size(); i++) {
+              PrintWriter writer2 = new PrintWriter(list.get(i).getOutputStream(), true);
+              writer2.println("Correct Word : " + readValue + "\nLast Word : " + game.getLastChar());
+            }
+          }
+          else {
+            for(int i = 0; i  < list.size(); i++) {
+              PrintWriter writer2 = new PrintWriter(list.get(i).getOutputStream(), true);
+              writer2.println("Wrong Word");
+            }
+          }
+        } else if(readValue.equals("Start") && name.equals(queue.getCurrentClientName())) {
+          PrintWriter writer2 =  new PrintWriter(socket.getOutputStream(), true);
+          writer2.println("Write a Round");
+          String round = reader.readLine();
+          wordSetting.setFinalRound(Integer.parseInt(round));
+          wordSetting.setRoundFlag(true);
           Random random = new Random();
-          int index = random.nextInt(words.size());
-          startWord = words.get(index);
+          words = db.selectWords(wordSetting.getFinalRound());
+          startWord = words.get(random.nextInt(words.size()));
           wordSetting.setStartWord(startWord);
-          wordSetting.setRound(0);
-          wordSetting.setFinalRound(round);
-          for (int i = 0; i < list.size(); i++) {
-            out = list.get(i).getOutputStream();
-            PrintWriter printWriter = new PrintWriter(out, true);
-            printWriter.println("Round : " + round);
-            printWriter.println("Start Word : " + startWord);
-            printWriter.println("Game Started");
+          Game game = Game.getInstance();
+          game.setCurrentWord(startWord);
+          game.setLastChar(startWord.charAt(0));
+          for(int i = 0; i < list.size(); i++) {
+            PrintWriter writer3 = new PrintWriter(list.get(i).getOutputStream(), true);
+            writer3.println("Round : " + wordSetting.getFinalRound());
+            writer3.println("Start Word : " + wordSetting.getStartWord());
+            writer3.println("Game Started");
           }
-          break;
-        } else {
-          //시작안했으면 채팅모드로.
-          for (int i = 0; i < list.size(); i++) {
-            out = list.get(i).getOutputStream();
-            PrintWriter printWriter = new PrintWriter(out, true);
-            printWriter.println(name + " : " + readValue);
-          }
-        }
-        if (!wordSetting.getRoundFlag()) {
-          System.out.println("Break");
-          break;
-        }
-        else readValue = reader.readLine();
-      }
-      for (int i = wordSetting.getRound(); i < wordSetting.getFinalRound();) {
-        String currentWord = null;
-        char lastChar;
-        if(wordSetting.getLastChar() == ' ') {
-          lastChar = wordSetting.getStartWord().charAt(i);
-          wordSetting.setLastChar(lastChar);
+          timer.scheduleAtFixedRate(timerEvent, 0, 1000);
         }
         else {
-          lastChar = wordSetting.getLastChar();
-        }
-        PrintWriter printWriter;
-        if (!wordSetting.getIsStart()) {
-          queue.getNextClient();
-          wordSetting.setIsStart(true);
-          for (int j = 0; j < list.size(); j++) {
-            out = list.get(j).getOutputStream();
-            printWriter = new PrintWriter(out, true);
-            printWriter.println("Current Char : " + wordSetting.getLastChar());
-          }
-        }
-        while ((readValue = reader.readLine()) != null) {
-          if(readValue.equals("Game Started")) continue;
-          //클라이언트가 접속했을때 현재 클라이언트를 알려주는 코드
-          //System.out.println("Current Client : " + queue.getCurrentClientName());
-          for (int j = 0; j < list.size(); j++) {
-            out = list.get(j).getOutputStream();
-            printWriter = new PrintWriter(out, true);
-            printWriter.println("Current Client : " + queue.getCurrentClientName());
-          }
-          if (db.select(readValue) && readValue.charAt(0) == wordSetting.getLastChar()) {
-            currentWord = readValue;
-            lastChar = currentWord.charAt(currentWord.length() - 1);
-            wordSetting.setLastChar(lastChar);
-            for (int j = 0; j < list.size(); j++) {
-              out = list.get(j).getOutputStream();
-              printWriter = new PrintWriter(out, true);
-              printWriter.println("Correct Word : " + currentWord);
-              printWriter.println("Current Char : " + lastChar);
-            }
-            queue.getNextClient();
-          } else {
-            for (int j = 0; j < list.size(); j++) {
-              out = list.get(j).getOutputStream();
-              printWriter = new PrintWriter(out, true);
-              printWriter.println("Wrong Word");
-            }
+          //내 차례가 아닐때에는 채팅 모드로..
+          for(int i = 0; i  < list.size(); i++) {
+            PrintWriter writer2 = new PrintWriter(list.get(i).getOutputStream(), true);
+            writer2.println(name + " : " + readValue);
           }
         }
       }
+
     } catch (Exception e) {
       e.printStackTrace();
     }

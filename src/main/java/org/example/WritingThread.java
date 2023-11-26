@@ -30,6 +30,7 @@ public class WritingThread extends Thread {
 			PrintWriter writer = new PrintWriter(out, true);
 			while(true) {
 				String tmp = scanner.nextLine();
+				/*
 				if(name.equals(currentClient.getName())) {
 					if(tmp.contains(" ")) {
 						System.out.println("No Space");
@@ -40,6 +41,8 @@ public class WritingThread extends Thread {
 				else {
 					System.out.println("Not Your Turn");
 				}
+				 */
+				writer.println(tmp);
 			}
 			
 		} catch (Exception e) {

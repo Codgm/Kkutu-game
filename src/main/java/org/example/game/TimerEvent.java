@@ -1,23 +1,25 @@
 package org.example.game;
 
-import java.io.Serializable;
+import java.util.TimerTask;
 
-public class TimerEvent implements Serializable {
-  private static final long serialVersionUID = 1L;
+public class TimerEvent extends TimerTask {
 
-  private String currentWord;
-  private int remainingTimeInSeconds;
+  private int time = 0;
 
-  public TimerEvent(String currentWord, int remainingTimeInSeconds) {
-    this.currentWord = currentWord;
-    this.remainingTimeInSeconds = remainingTimeInSeconds;
+  private Words words = Words.getInstance();
+
+  public TimerEvent(int time) {
+    this.time = time;
   }
 
-  public String getCurrentWord() {
-    return currentWord;
+  @Override
+  public void run() {
+    if (time > 0) {
+      time--;
+    } else {
+      words.setIsEnd(true);
+      this.cancel();
+    }
   }
 
-  public int getRemainingTimeInSeconds() {
-    return remainingTimeInSeconds;
-  }
 }

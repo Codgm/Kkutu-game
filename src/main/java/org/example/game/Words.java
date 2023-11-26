@@ -15,6 +15,10 @@ public class Words {
   private int round = 0;
 
   private int finalRound = 0;
+  private int gameFlag;
+
+  private boolean isEnd = false;
+  private int gameFlag2;
 
 
   public static synchronized Words getInstance() {
@@ -82,6 +86,30 @@ public class Words {
 
   public synchronized void setFinalRound(int finalRound) {
     this.finalRound = finalRound;
+  }
+
+  public synchronized int getGameFlag() {
+    return this.gameFlag;
+  }
+
+  public synchronized void setGameFlag(int gameFlag) {
+    this.gameFlag = gameFlag;
+  }
+
+  public synchronized int getGameFlag2() {
+    return this.gameFlag2;
+  }
+
+  public synchronized void setGameFlag2(int gameFlag2) {
+    this.gameFlag2 = gameFlag2;
+  }
+
+  public synchronized boolean getIsEnd() {
+    return this.isEnd;
+  }
+
+  public synchronized void setIsEnd(boolean isEnd) {
+    this.isEnd = isEnd;
   }
 
 }

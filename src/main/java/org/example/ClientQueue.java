@@ -5,32 +5,32 @@ import java.util.Queue;
 
 public class ClientQueue {
     private static ClientQueue instance = null;
-    private Queue<String> queue = new LinkedList<>();
-    private String currentClientName = null;
+    private volatile Queue<String> queue = new LinkedList<>();
+    private volatile String currentClientName = null;
 
     private ClientQueue() {}
 
-    public static synchronized ClientQueue getInstance() {
+    public synchronized static ClientQueue getInstance() {
         if (instance == null) {
             instance = new ClientQueue();
         }
         return instance;
     }
 
-    public synchronized void addClient(String name) {
+    public void addClient(String name) {
         queue.add(name);
         if (queue.size() == 1) {
             currentClientName = queue.peek();
         }
     }
 
-    public synchronized void getNextClient() {
+    public void getNextClient() {
         queue.add(currentClientName);
         queue.poll();
         currentClientName = queue.peek();
     }
 
-    public synchronized String getCurrentClientName() {
+    public String getCurrentClientName() {
         return currentClientName;
     }
 }

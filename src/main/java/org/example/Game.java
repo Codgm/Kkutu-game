@@ -17,6 +17,10 @@ public class Game {
 
   private final ClientQueue queue = ClientQueue.getInstance();
 
+  private int round;
+
+  private String startWord;
+
   public static synchronized Game getInstance() {
     if (instance == null) {
       instance = new Game();
@@ -45,6 +49,9 @@ public class Game {
   }
 
   public synchronized boolean check(String tmp) {
+    if(tmp == null || tmp.isEmpty()) {
+      return false;
+    }
     if(tmp.charAt(0) == getLastChar() && db.select(tmp) && !words.contains(tmp)) {
       words.add(tmp);
       setCurrentWord(tmp);
@@ -57,4 +64,27 @@ public class Game {
     }
   }
 
+  public synchronized void updateRound() {
+    setRound(getRound() + 1);
+    setLastChar(startWord.charAt(getRound() - 1));
+    setCurrentWord(null);
+    words.clear();
+  }
+
+
+  public synchronized int getRound() {
+    return this.round;
+  }
+
+  public synchronized void setRound(int round) {
+    this.round = round;
+  }
+
+  public synchronized void setStartWord(String startWord) {
+    this.startWord = startWord;
+  }
+
+  public synchronized String getStartWord() {
+    return this.startWord;
+  }
 }

@@ -10,15 +10,13 @@ import java.util.concurrent.Semaphore;
 public class WritingThread extends Thread {
 	private Socket socket = null;
 	private Scanner scanner = new Scanner(System.in);
-	private String name;
 
 	private CurrentClient currentClient = null;
 
 
 	
-	public WritingThread(Socket socket, String name, CurrentClient currentClient) {
+	public WritingThread(Socket socket, CurrentClient currentClient) {
 		this.socket = socket;
-		this.name = name;
 		this.currentClient = currentClient;
 	}
 

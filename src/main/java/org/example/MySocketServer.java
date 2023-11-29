@@ -39,8 +39,8 @@ public class MySocketServer extends Thread {
 
   public void run() {
     try {
-      System.out.println("Server : " + socket.getInetAddress() + " Ip Connected");
       db.connect();
+      System.out.println("Server : " + socket.getInetAddress() + " Ip Connected");
       wordSetting.setRoundFlag(false);
       InputStream input = socket.getInputStream();
       BufferedReader reader = new BufferedReader(new InputStreamReader(input));
@@ -93,8 +93,8 @@ public class MySocketServer extends Thread {
         //처음 세팅이 아닐때,
         if(readValue.equals("Start") && name.equals(queue.getCurrentClientName()) && wordSetting.getRoundFlag()) {
           Game game = Game.getInstance();
-          TimerEvent timerEvent = new TimerEvent(120);
           timer = new Timer();
+          TimerEvent timerEvent = new TimerEvent(120);
           for(int i = 0; i < list.size(); i++) {
             PrintWriter writer3 = new PrintWriter(list.get(i).getOutputStream(), true);
             writer3.println("Current Round : " + game.getRound());
@@ -108,14 +108,29 @@ public class MySocketServer extends Thread {
         else if(readValue.equals("Start") && name.equals(queue.getCurrentClientName())) {
           PrintWriter writer2 =  new PrintWriter(socket.getOutputStream(), true);
           timer = new Timer();
+          Game game = Game.getInstance();
           TimerEvent timerEvent = new TimerEvent(120);
+          writer2.println("Write a Language");
+          readValue = reader.readLine();
+          while (!readValue.equals("ko") && !readValue.equals("en")) {
+            writer2.println("Error. Write a Language");
+            readValue = reader.readLine();
+          }
+          String language = readValue;
+          game.setLanguage(language);
+          writer2.println("Write a Option(1. injeong(Only Korean), 2. manner");
+          String option = reader.readLine();
+          if(language.equals("en") && option.split(" ")[0].equals("1")) {
+            writer2.println("Injeong only support Korean");
+          }
+          else game.setInjeong(option.split(" ")[0].equals("1"));
+          game.setManner(option.split(" ")[1].equals("1"));
           writer2.println("Write a Round");
           String round = reader.readLine();
           wordSetting.setFinalRound(Integer.parseInt(round));
           wordSetting.setRoundFlag(true);
-          Game game = Game.getInstance();
           Random random = new Random();
-          words = db.selectWords(wordSetting.getFinalRound());
+          words = db.selectWords(wordSetting.getFinalRound(), game.getLanguage(), game.getInjeong());
           startWord = words.get(random.nextInt(words.size()));
           game.setStartWord(startWord);
           game.setCurrentWord(startWord);
@@ -128,7 +143,6 @@ public class MySocketServer extends Thread {
             writer3.println("Round Word : " + game.getStartWord());
             writer3.println("Last Char : " + game.getLastChar());
             writer3.println("Game Started");
-
           }
           writer.println("Server Ok");
           timer.scheduleAtFixedRate(timerEvent, 0, 1000);

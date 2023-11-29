@@ -21,6 +21,11 @@ public class Game {
 
   private String startWord;
 
+  private boolean injeong = false;
+  private boolean manner = false;
+
+  private String language;
+
   public static synchronized Game getInstance() {
     if (instance == null) {
       instance = new Game();
@@ -52,7 +57,20 @@ public class Game {
     if(tmp == null || tmp.isEmpty()) {
       return false;
     }
-    if(tmp.charAt(0) == getLastChar() && db.select(tmp) && !words.contains(tmp)) {
+    //어인정일때 어인정부터 검사
+    if(injeong) {
+      if(tmp.charAt(0) == getLastChar() && db.select(tmp, getLanguage(), true, false) && !words.contains(tmp)) {
+        words.add(tmp);
+        setCurrentWord(tmp);
+        setLastChar(tmp.charAt(tmp.length() - 1));
+        queue.getNextClient();
+        return true;
+      }
+      else {
+        return false;
+      }
+    }
+    if(tmp.charAt(0) == getLastChar() && db.select(tmp, getLanguage(), false, manner) && !words.contains(tmp)) {
       words.add(tmp);
       setCurrentWord(tmp);
       setLastChar(tmp.charAt(tmp.length() - 1));
@@ -86,5 +104,29 @@ public class Game {
 
   public synchronized String getStartWord() {
     return this.startWord;
+  }
+
+public synchronized void setInjeong(boolean injeong) {
+    this.injeong = injeong;
+  }
+
+  public synchronized boolean getInjeong() {
+    return this.injeong;
+  }
+
+  public synchronized void setManner(boolean manner) {
+    this.manner = manner;
+  }
+
+  public synchronized boolean getManner() {
+    return this.manner;
+  }
+
+  public synchronized void setLanguage(String language) {
+    this.language = language;
+  }
+
+  public synchronized String getLanguage() {
+    return this.language;
   }
 }

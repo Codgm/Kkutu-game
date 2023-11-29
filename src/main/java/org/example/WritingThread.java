@@ -28,7 +28,7 @@ public class WritingThread extends Thread {
 			PrintWriter writer = new PrintWriter(out, true);
 			while(true) {
 				String tmp = scanner.nextLine();
-				/*
+				/* -> Client단 말고 Server단에서 처리하기로 변경..
 				if(name.equals(currentClient.getName())) {
 					if(tmp.contains(" ")) {
 						System.out.println("No Space");

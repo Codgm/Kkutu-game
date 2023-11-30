@@ -11,17 +11,19 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Timer;
+import org.example.game.Names;
 import org.example.game.TimerEvent;
 import org.example.game.Words;
 
 public class MySocketServer extends Thread {
 
-  private static ArrayList<Socket> list = new ArrayList<Socket>();
-  private ClientQueue queue = ClientQueue.getInstance();
+  private static final ArrayList<Socket> list = new ArrayList<Socket>();
+  private final ClientQueue queue = ClientQueue.getInstance();
 
-  private Words wordSetting = Words.getInstance();
+  private final Words wordSetting = Words.getInstance();
   private Socket socket = null;
 
+  private final Names names = Names.getInstance();
 
   private ArrayList<String> words = new ArrayList<String>();
 
@@ -55,6 +57,7 @@ public class MySocketServer extends Thread {
 
       readValue = reader.readLine();
       name = readValue;
+      names.add(name);
       queue.addClient(name);
 
       writer.println(name + " Connected");

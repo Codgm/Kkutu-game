@@ -1,6 +1,9 @@
 package org.example;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import org.example.game.Names;
 
 public class Game {
 
@@ -17,6 +20,9 @@ public class Game {
 
   private final ClientQueue queue = ClientQueue.getInstance();
 
+  private final Names names = Names.getInstance();
+  private static Map<String, Integer> score = new HashMap<>(); //점수 기록용
+
   private int round;
 
   private String startWord;
@@ -25,6 +31,10 @@ public class Game {
   private boolean manner = false;
 
   private String language;
+
+  private int time = 0; //친 시간을 기억해놓고 점수계산하는데에 사용하기 위해서.
+
+  private int chain = 0; //chain까지 정해놔야 점수계산할때 사용할 수 있네?
 
   public static synchronized Game getInstance() {
     if (instance == null) {
@@ -35,6 +45,9 @@ public class Game {
 
   private Game() {
     db.connect();
+    for(String name : names.getNames()) {
+      score.put(name, 0);
+    }
   }
 
   public synchronized String getCurrentWord() {
@@ -83,6 +96,9 @@ public class Game {
   }
 
   public synchronized void updateRound() {
+    //점수 처리.
+    String loser = queue.getCurrentClientName();
+    //score.replace(loser, );
     setRound(getRound() + 1);
     setLastChar(startWord.charAt(getRound() - 1));
     setCurrentWord(null);
@@ -129,4 +145,13 @@ public synchronized void setInjeong(boolean injeong) {
   public synchronized String getLanguage() {
     return this.language;
   }
+
+  public synchronized int getScore(String name) {
+    return score.get(name);
+  }
+
+  public synchronized void setScore() {
+
+  }
+
 }

@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Timer;
 import org.example.game.Names;
+import org.example.game.Passwd;
 import org.example.game.TimerEvent;
 import org.example.game.Words;
 
@@ -65,6 +66,10 @@ public class MySocketServer extends Thread {
       while (true) {
         Timer timer = new Timer();
         if(wordSetting.getIsEnd()) {
+          if(wordSetting.getIsTimeOver()){
+            System.out.println("Time Out");
+            queue.pollTimerEvent();
+          }
           for(int i = 0; i  < list.size(); i++) {
             PrintWriter writer2 = new PrintWriter(list.get(i).getOutputStream(), true);
             writer2.println("Round Ended");
@@ -97,7 +102,7 @@ public class MySocketServer extends Thread {
         if(readValue.equals("Start") && name.equals(queue.getCurrentClientName()) && wordSetting.getRoundFlag()) {
           Game game = Game.getInstance();
           timer = new Timer();
-          TimerEvent timerEvent = new TimerEvent(120);
+          TimerEvent timerEvent = new TimerEvent(120,false);
           for(int i = 0; i < list.size(); i++) {
             PrintWriter writer3 = new PrintWriter(list.get(i).getOutputStream(), true);
             writer3.println("Current Round : " + game.getRound());
@@ -112,7 +117,7 @@ public class MySocketServer extends Thread {
           PrintWriter writer2 =  new PrintWriter(socket.getOutputStream(), true);
           timer = new Timer();
           Game game = Game.getInstance();
-          TimerEvent timerEvent = new TimerEvent(120);
+          TimerEvent timerEvent = new TimerEvent(120,false);
           writer2.println("Write a Language");
           readValue = reader.readLine();
           while (!readValue.equals("ko") && !readValue.equals("en")) {
@@ -121,7 +126,7 @@ public class MySocketServer extends Thread {
           }
           String language = readValue;
           game.setLanguage(language);
-          writer2.println("Write a Option(1. injeong(Only Korean), 2. manner");
+          writer2.println("Write a Option(1. injeong(Only Korean), 2. manner)");
           String option = reader.readLine();
           if(language.equals("en") && option.split(" ")[0].equals("1")) {
             writer2.println("Injeong only support Korean");
@@ -153,8 +158,8 @@ public class MySocketServer extends Thread {
         else if(wordSetting.getRoundFlag() && name.equals(queue.getCurrentClientName())) {
           if(readValue.equals("Client Ok")) {
             Timer timer2 = new Timer();
-            TimerEvent personalTimerEvent = new TimerEvent(10);
-            timer2.scheduleAtFixedRate(personalTimerEvent, 0, 1000);
+            //TimerEvent personalTimerEvent = new TimerEvent(10,true);
+            timer2.scheduleAtFixedRate(queue.getTimerEvent(), 0, 1000);
           }
           readValue = reader.readLine();
           if(wordSetting.getIsEnd()) {
@@ -162,6 +167,7 @@ public class MySocketServer extends Thread {
           }
           Game game = Game.getInstance();
           if(game.check(readValue)) {
+            queue.pollTimerEvent();
             for(int i = 0; i  < list.size(); i++) {
               PrintWriter writer2 = new PrintWriter(list.get(i).getOutputStream(), true);
               writer2.println("Correct Word : " + readValue + "\nLast Char : " + game.getLastChar());

@@ -19,7 +19,10 @@ public class Words {
 
   private boolean isEnd = false;
   private int gameFlag2;
+  private boolean isTimeOver=false;
 
+  public synchronized boolean getIsTimeOver(){return isTimeOver;}//for Debugging
+  public synchronized void setIsTimeOver(boolean flag){this.isTimeOver=flag;}//for Debugging
 
   public static synchronized Words getInstance() {
     if (instance == null) {

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import org.example.game.Names;
+import org.example.game.Passwd;
 
 public class Game {
 

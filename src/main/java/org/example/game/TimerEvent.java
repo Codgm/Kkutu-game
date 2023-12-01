@@ -4,21 +4,29 @@ import java.util.TimerTask;
 
 public class TimerEvent extends TimerTask {
 
-  private int time = 0;
-
+  private final int time;
+  private int curTime = 0;
+  private final boolean isPersonalTimer;
   private Words words = Words.getInstance();
 
-  public TimerEvent(int time) {
+  public TimerEvent(int time, boolean isPersonalTimer) {
+    this.isPersonalTimer = isPersonalTimer;
+    this.curTime = time;
     this.time = time;
   }
 
   @Override
   public void run() {
-    if (time > 0) {
-      time--;
+    if (curTime > 0) {
+      curTime--;
+      if(isPersonalTimer){
+        System.out.println(curTime+"sex left");
+      }
     } else {
       words.setIsEnd(true);
-      this.cancel();
+      words.setIsTimeOver(true);
+      //this.cancel();
+      //this.curTime = this.time;
     }
   }
 

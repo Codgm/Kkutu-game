@@ -32,7 +32,8 @@ public class WritingThread extends Thread {
       OutputStreamWriter outputStreamWriter = new OutputStreamWriter(out, StandardCharsets.UTF_8);
       PrintWriter writer = new PrintWriter(outputStreamWriter, true);
       while (true) {
-        String tmp = scanner.nextLine();
+        //String tmp = scanner.nextLine();
+        String tmp=frame.getInputText();
 				/* -> Client단 말고 Server단에서 처리하기로 변경..
 				if(name.equals(currentClient.getName())) {
 					if(tmp.contains(" ")) {

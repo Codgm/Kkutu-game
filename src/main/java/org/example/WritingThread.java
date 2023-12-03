@@ -8,16 +8,17 @@ import java.util.Scanner;
 import java.util.concurrent.Semaphore;
 
 public class WritingThread extends Thread {
-
-  private Socket socket = null;
-  private Scanner scanner = new Scanner(System.in);
+	private Socket socket = null;
+	private Scanner scanner = new Scanner(System.in);
 
   private CurrentClient currentClient = null;
+  private IOFrame frame = null;
 
 
-  public WritingThread(Socket socket, CurrentClient currentClient) {
+  public WritingThread(Socket socket, CurrentClient currentClient, IOFrame frame) {
     this.socket = socket;
     this.currentClient = currentClient;
+    this.frame = frame;
   }
 
 

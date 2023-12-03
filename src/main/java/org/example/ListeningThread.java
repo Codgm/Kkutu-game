@@ -11,13 +11,15 @@ public class ListeningThread extends Thread {
 
   private Socket socket = null;
   private CurrentClient currentClient;
+  private IOFrame frame = null;
 
   private String name;
 
-  public ListeningThread(Socket socket, CurrentClient currentClient, String name) {
+  public ListeningThread(Socket socket, CurrentClient currentClient, String name, IOFrame frame) {
     this.socket = socket;
     this.currentClient = currentClient;
     this.name = name;
+    this.frame = frame;
   }
 
   public void run() {
@@ -57,7 +59,8 @@ public class ListeningThread extends Thread {
 				}
 				 */
         else {
-          System.out.println(tmp);
+          //System.out.println(tmp);
+          frame.pushRecordData(tmp + "\n");
         }
       }
 

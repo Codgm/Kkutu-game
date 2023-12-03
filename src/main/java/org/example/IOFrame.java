@@ -1,6 +1,8 @@
 package org.example;
 
 import java.awt.BorderLayout;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -12,58 +14,42 @@ import javax.swing.event.DocumentListener;
 
 public class IOFrame extends JFrame {
 
-  String tempRecordData = "YOU- car\n"
-      + "OPPONENT- race\n"
-      + "YOU- edit\n"
-      + "OPPONENT- tree\n"
-      + "YOU- europe\n"
-      + "OPPONENT- earth\n"
-      + "YOU- hell";
-  String[] tempTurn = {
+  private int leftTime = 0;
+  private int turnStateValue = 0;
+  private String recordData = "";
+  private String[] turnState = {
       "Waiting... | ", "Your turn | ", "Opponent turn | "
   };
-  String[] tempTime = {
-      "16sec left ", "3sec left ", "120sec left "
-  };
+  volatile private boolean isInputTextValid = false;
+  private String inputText = "";
 
-  public IOFrame() {
-    this.setTitle("${userName}");
+  JPanel page = new JPanel();
+  JPanel inputLayout = new JPanel();
+  JPanel stateLayout = new JPanel();
 
-    JPanel page = new JPanel();
-    JPanel inputLayout = new JPanel();
-    JPanel stateLayout = new JPanel();
+  JTextArea recordTextArea = new JTextArea();
+  JScrollPane scrollRecord = new JScrollPane(recordTextArea);
+  JLabel inputLabel = new JLabel("input>> ");
+  JTextField inputTextField = new JTextField();
+  JLabel turnLabel = new JLabel(turnState[turnStateValue]);
+  JLabel timeLabel = new JLabel(leftTime + "sec left");
+
+  public IOFrame(String userName) {
+    this.setTitle(userName);
     page.setLayout(new BorderLayout());
     inputLayout.setLayout(new BorderLayout());
     stateLayout.setLayout(new BorderLayout());
 
-    JTextArea recordTextArea = new JTextArea();
-    JScrollPane scrollRecord = new JScrollPane(recordTextArea);
-    JLabel inputLabel = new JLabel("input>> ");
-    JTextField inputTextField = new JTextField();
-    JLabel turnLabel = new JLabel(tempTurn[2]);
-    JLabel timeLabel = new JLabel(tempTime[2]);
-
     recordTextArea.setEditable(false);
-    recordTextArea.setText(tempRecordData);//temp
-    inputTextField.getDocument().addDocumentListener(new DocumentListener() {
+    recordTextArea.setText(recordData);
+    inputTextField.addKeyListener(new KeyAdapter() {
       @Override
-      public void insertUpdate(DocumentEvent e) {
-        print();
-      }
-
-      @Override
-      public void removeUpdate(DocumentEvent e) {
-        print();
-      }
-
-      @Override
-      public void changedUpdate(DocumentEvent e) {
-        print();
-      }
-
-      private void print() {
-        String text = inputTextField.getText();
-        System.out.println("호출됌" + text);
+      public void keyTyped(KeyEvent e) {
+        if (e.getKeyChar() == '\n') {
+          inputText = inputTextField.getText();
+          isInputTextValid = true;
+          inputTextField.setText("");
+        }
       }
     });
 
@@ -84,5 +70,48 @@ public class IOFrame extends JFrame {
     setResizable(true);
     setLocationRelativeTo(null);
     setDefaultCloseOperation(EXIT_ON_CLOSE);
+  }
+
+  void reRenderIOFrame() {
+    //inputTextField manage states itself
+    recordTextArea.setText(recordData);
+    turnLabel.setText(turnState[turnStateValue]);
+    timeLabel.setText(leftTime + "sec left");
+  }
+
+  void setLeftTime(int leftTime) {
+    this.leftTime = leftTime;
+    timeLabel.setText(leftTime + "sec left");
+  }
+
+  void setTurnStateValue(int turnStateValue) {
+    this.turnStateValue = turnStateValue;
+    turnLabel.setText(turnState[turnStateValue]);
+  }
+
+  void clearRecordDate() {
+    this.recordData = "";
+  }
+
+  //개행은 입력에 이미 포함됀 걸로 가정
+  void pushRecordData(String extra) {
+    this.recordData = this.recordData + extra;
+    recordTextArea.setText(recordData);
+  }
+
+  void setFrameTitle(String title) {
+    this.setTitle(title);
+  }
+
+  boolean isInputTextValid() {
+    return isInputTextValid;
+  }
+
+  String getInputText() {
+    int debugCount = 0;
+    while (!isInputTextValid) {
+    }
+    isInputTextValid = false;
+    return inputText;
   }
 }

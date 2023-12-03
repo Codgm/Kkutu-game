@@ -1,6 +1,8 @@
 package org.example.game;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import org.example.IOFrame;
 
 public class Names {
 
@@ -14,7 +16,7 @@ public class Names {
     return instance;
   }
 
-  public Names() {}
+  private Names() {}
 
   public synchronized void add(String name) {
     names.add(name);

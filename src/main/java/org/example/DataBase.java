@@ -31,10 +31,10 @@ public class DataBase {
     }
   }
 
-  public boolean select(String string, String lang, boolean injeong, boolean manner) {
+  public boolean select(String string, String lang, boolean injeong, boolean injeong2, boolean manner) {
     try {
       String query;
-      if(injeong) query = "SELECT _id FROM public.kkutu_injeong WHERE _id = '" + string + "'"; //어인정 옵션
+      if(injeong2) query = "SELECT _id FROM public.kkutu_" + lang +" WHERE _id = '" + string + "' AND type LIKE '%INJEONG%'";
       else if(manner) query = "SELECT _id FROM public.kkutu_manner_" + lang +" WHERE _id = '" + string + "'";
       else query = "SELECT _id FROM public.kkutu_" + lang +" WHERE _id = '" + string + "'";
       PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -44,6 +44,8 @@ public class DataBase {
       return false;
     }
   }
+
+
   public ArrayList<String> selectWords(int round, String lang, boolean injeong) {
     //우선 en으로 설정. 추후 Parameter로 받아서 언어 설정할 수 있게 변경.
     String query = "SELECT _id FROM public.kkutu_" + lang + " WHERE CHAR_LENGTH(_id) = " + round;

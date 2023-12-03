@@ -12,14 +12,12 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Timer;
 import org.example.game.Names;
-import org.example.game.Passwd;
 import org.example.game.TimerEvent;
 import org.example.game.Words;
 
 public class MySocketServer extends Thread {
 
   private static final ArrayList<Socket> list = new ArrayList<Socket>();
-  private final ListIOFrame listIOFrame = ListIOFrame.getInstance();
   private final ClientQueue queue = ClientQueue.getInstance();
 
   private final Words wordSetting = Words.getInstance();
@@ -171,7 +169,9 @@ public class MySocketServer extends Thread {
             queue.pollTimerEvent();
             for(int i = 0; i  < list.size(); i++) {
               PrintWriter writer2 = new PrintWriter(list.get(i).getOutputStream(), true);
-              writer2.println("Correct Word : " + readValue + "\nLast Char : " + game.getLastChar());
+              writer2.println("Correct Word : " + readValue);
+              writer2.println("Mean : " + db.getMeanByWord(readValue, game.getLanguage()));
+              writer2.println("Last Char : " + game.getLastChar());
               writer2.println("Current Client : " + queue.getCurrentClientName());
             }
           }

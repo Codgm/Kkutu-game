@@ -31,15 +31,32 @@ public class DataBase {
     }
   }
 
-  public boolean select(String string, String lang, boolean injeong, boolean injeong2, boolean manner) {
+  public boolean select(String string, String lang, boolean injeong) {
     try {
       String query;
-      if(injeong2) query = "SELECT _id FROM public.kkutu_" + lang +" WHERE _id = '" + string + "' AND type LIKE '%INJEONG%'";
-      else if(manner) query = "SELECT _id FROM public.kkutu_manner_" + lang +" WHERE _id = '" + string + "'";
-      else query = "SELECT _id FROM public.kkutu_" + lang +" WHERE _id = '" + string + "'";
+      if (injeong) {
+        query = "SELECT _id FROM public.kkutu_" + lang + " WHERE _id = '" + string
+            + "' AND type LIKE '%INJEONG%'";
+      } else {
+        query = "SELECT _id, type FROM public.kkutu_" + lang + " WHERE _id = '" + string + "'";
+      }
       PreparedStatement preparedStatement = connection.prepareStatement(query);
       ResultSet resultSet = preparedStatement.executeQuery();
-      return resultSet.next();
+      //type에 INJEONG이 포함되어있으면 false 아니면 true
+      if (injeong) {
+        return resultSet.next();
+      } else {
+        if (resultSet.next()) {
+          String type = resultSet.getString("type");
+          if (type.contains("INJEONG")) {
+            return false;
+          } else {
+            return true;
+          }
+        } else {
+          return false;
+        }
+      }
     } catch (SQLException e) {
       return false;
     }
@@ -53,10 +70,25 @@ public class DataBase {
     try {
       PreparedStatement preparedStatement = connection.prepareStatement(query);
       ResultSet resultSet = preparedStatement.executeQuery();
-      while(resultSet.next()) {
+      while (resultSet.next()) {
         words.add(resultSet.getString("_id"));
       }
       return words;
+    } catch (SQLException e) {
+      return null;
+    }
+  }
+
+  public String getMeanByWord(String word, String lang) {
+    String query = "SELECT mean FROM public.kkutu_" + lang + " WHERE _id = '" + word + "'";
+    try {
+      PreparedStatement preparedStatement = connection.prepareStatement(query);
+      ResultSet resultSet = preparedStatement.executeQuery();
+      if (resultSet.next()) {
+        return resultSet.getString("mean");
+      } else {
+        return null;
+      }
     } catch (SQLException e) {
       return null;
     }

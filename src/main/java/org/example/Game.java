@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import org.example.game.Names;
-import org.example.game.Passwd;
 
 public class Game {
 
@@ -73,7 +72,7 @@ public class Game {
     }
     //어인정일때 어인정부터 검사
     if(injeong) {
-      if(tmp.charAt(0) == getLastChar() && db.select(tmp, getLanguage(), true, false) && !words.contains(tmp)) {
+      if(tmp.charAt(0) == getLastChar() && db.select(tmp, getLanguage(), true) && !words.contains(tmp)) {
         words.add(tmp);
         setCurrentWord(tmp);
         setLastChar(tmp.charAt(tmp.length() - 1));
@@ -84,7 +83,7 @@ public class Game {
         return false;
       }
     }
-    if(tmp.charAt(0) == getLastChar() && db.select(tmp, getLanguage(), false, manner) && !words.contains(tmp)) {
+    if(tmp.charAt(0) == getLastChar() && db.select(tmp, getLanguage(), false) && !words.contains(tmp)) {
       words.add(tmp);
       setCurrentWord(tmp);
       setLastChar(tmp.charAt(tmp.length() - 1));
@@ -104,6 +103,11 @@ public class Game {
     setLastChar(startWord.charAt(getRound() - 1));
     setCurrentWord(null);
     words.clear();
+  }
+
+  public synchronized void updateScore(String name, int length) {
+    //점수 처리.
+    //score.replace(name,);
   }
 
 
@@ -151,8 +155,20 @@ public synchronized void setInjeong(boolean injeong) {
     return score.get(name);
   }
 
-  public synchronized void setScore() {
+  public synchronized void setChain(int chain) {
+    this.chain = chain;
+  }
 
+  public synchronized int getChain() {
+    return this.chain;
+  }
+
+  public synchronized void setTime(int time) {
+    this.time = time;
+  }
+
+  public synchronized int getTime() {
+    return this.time;
   }
 
 }

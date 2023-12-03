@@ -20,7 +20,7 @@ public class TimerEvent extends TimerTask {
     if (curTime > 0) {
       curTime--;
       if(isPersonalTimer){
-        System.out.println(curTime+"sex left");
+        System.out.println(curTime+"sec left");
       }
     } else {
       words.setIsEnd(true);

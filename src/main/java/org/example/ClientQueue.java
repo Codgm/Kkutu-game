@@ -41,6 +41,7 @@ public class ClientQueue {
         return personalTimerEvent.peek();
     }
     public synchronized void pollTimerEvent(){
+        personalTimerEvent.add(new TimerEvent(10,true));
         personalTimerEvent.peek().cancel();
         personalTimerEvent.poll();
     }

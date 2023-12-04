@@ -92,6 +92,13 @@ public class ListeningThread extends Thread {
             frame.setRoundLeftTime(Integer.parseInt(tmp.substring(13)));
           }
         }
+        else if(tmp.contains("New Client ")){
+          String newClient =tmp.substring(11);
+          frame.addClientList(newClient);
+        }
+        else if(tmp.contains("Score: ")){
+
+        }
 				/*
 				else if(tmp.contains("Game Started")) {
 					//확인했다는 메시지를 보냄

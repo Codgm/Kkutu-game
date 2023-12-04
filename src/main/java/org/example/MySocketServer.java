@@ -82,6 +82,15 @@ public class MySocketServer extends Thread {
       name = readValue;
       names.add(name);
       queue.addClient(name);
+      for (int i = 0; i < list.size(); i++) {//name보다 list가 먼저 add되기 때문에 ㄱㅊ
+        OutputStream outputStream2 = list.get(i).getOutputStream();
+        OutputStreamWriter outputStreamWriter2 = new OutputStreamWriter(outputStream2,
+            StandardCharsets.UTF_8);
+        PrintWriter printWriter2 = new PrintWriter(outputStreamWriter2, true);
+        for(int j=0;j<names.getNames().size();j++){//IOFrame이 저장하는 client 정보는 Map이라 중복 삭제해줌
+          printWriter2.println("New Client " + names.getNames().get(j));
+        }
+      }
 
       printWriter.println(name + " Connected");
 

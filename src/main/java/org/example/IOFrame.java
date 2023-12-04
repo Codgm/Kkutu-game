@@ -1,7 +1,9 @@
 package org.example;
 
 import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
@@ -11,6 +13,8 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -20,8 +24,10 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.DefaultCaret;
+import javax.swing.BoxLayout;
 
 public class IOFrame extends JFrame {
+
   private boolean isBeforeFirstRound = true;//처음 한 번만 true고 그 이후로는 항상 false
   private String lastTurn = null;//마지막으로 누구의 턴이었는지, 라운드 종료됀 상태에서 필요함
   private String userName = null;
@@ -38,26 +44,35 @@ public class IOFrame extends JFrame {
   volatile private boolean isInputTextValid = false;
   private String inputText = "";
 
-  JPanel page = new JPanel();
+  private final Map<String, Integer> clientScore = new HashMap<>();
+
+  JPanel mainPage = new JPanel();
+  JPanel gamePage = new JPanel();
+  JPanel scorePage = new JPanel();
   JPanel inputLayout = new JPanel();
   JPanel stateLayout = new JPanel();
+  JPanel eachClientScore = new JPanel();
 
   JTextArea recordTextArea = new JTextArea();
   JScrollPane scrollRecord = new JScrollPane(recordTextArea);
   final JLabel inputLabel = new JLabel("input>> ");
   JTextField inputTextField = new JTextField();
   JLabel turnLabel = new JLabel(turnState[turnStateValue]);
-  JLabel personalTimeLabel = new JLabel("personal: "+personalLeftTime + "sec left");
-  JLabel roundTimeLabel = new JLabel(" | round: "+roundLeftTime+"sec left");
+  JLabel personalTimeLabel = new JLabel("personal: " + personalLeftTime + "sec left");
+  JLabel roundTimeLabel = new JLabel(" | round: " + roundLeftTime + "sec left");
+  JLabel scoreLabel = new JLabel("Score");
 
   public IOFrame(String userName) {
     recordTextArea.setFont(font);
     inputTextField.setFont(font);
 
     this.setTitle(userName);
-    page.setLayout(new BorderLayout());
+    mainPage.setLayout(new BorderLayout());
+    gamePage.setLayout(new BorderLayout());
+    scorePage.setLayout(new BorderLayout());
     inputLayout.setLayout(new BorderLayout());
     stateLayout.setLayout(new BorderLayout());
+    eachClientScore.setLayout(new BoxLayout(eachClientScore, BoxLayout.Y_AXIS));
 
     recordTextArea.setEditable(false);
     recordTextArea.setText(recordData);
@@ -66,7 +81,7 @@ public class IOFrame extends JFrame {
       public void keyTyped(KeyEvent e) {
         if (e.getKeyChar() == '\n') {
           inputText = inputTextField.getText();
-          if(!isRoundEnd) {
+          if (!isRoundEnd) {
             isInputTextValid = true;
           }
           inputTextField.setText("");
@@ -95,17 +110,17 @@ public class IOFrame extends JFrame {
 
       private void typedOnTextField() throws IOException {
         // 텍스트 필드의 내용이 변경될 때 실행할 작업
-        if(isBeforeFirstRound){
+        if (isBeforeFirstRound) {
           return;
         }
-        if(isRoundEnd&&lastTurn.equals(getUserName())){
-          isRoundEnd=false;
+        if (isRoundEnd && lastTurn.equals(getUserName())) {
+          isRoundEnd = false;
           OutputStream out = socket.getOutputStream();
-          OutputStreamWriter outputStreamWriter = new OutputStreamWriter(out, StandardCharsets.UTF_8);
+          OutputStreamWriter outputStreamWriter = new OutputStreamWriter(out,
+              StandardCharsets.UTF_8);
           PrintWriter writer = new PrintWriter(outputStreamWriter, true);
           writer.println("Start");
-        }
-        else if(isRoundEnd){
+        } else if (isRoundEnd) {
         }
       }
     });
@@ -118,10 +133,16 @@ public class IOFrame extends JFrame {
     inputLayout.add(inputTextField, BorderLayout.CENTER);
     inputLayout.add(stateLayout, BorderLayout.EAST);
 
-    page.add(inputLayout, BorderLayout.SOUTH);
-    page.add(scrollRecord, BorderLayout.CENTER);
+    gamePage.add(inputLayout, BorderLayout.SOUTH);
+    gamePage.add(scrollRecord, BorderLayout.CENTER);
 
-    this.add(page);
+    scorePage.add(scoreLabel, BorderLayout.NORTH);
+    scorePage.add(eachClientScore);
+
+    mainPage.add(gamePage, BorderLayout.CENTER);
+    mainPage.add(scorePage, BorderLayout.WEST);
+
+    this.add(mainPage);
 
     setSize(500, 140);
     setResizable(true);
@@ -136,22 +157,25 @@ public class IOFrame extends JFrame {
     //inputTextField manage states itself
     recordTextArea.setText(recordData);
     turnLabel.setText(turnState[turnStateValue]);
-    personalTimeLabel.setText("personal: "+personalLeftTime + "sec left");
+    personalTimeLabel.setText("personal: " + personalLeftTime + "sec left");
   }
 
   void setIsRoundEnd(boolean isRoundEnd) {
     this.isRoundEnd = isRoundEnd;
   }
-  boolean getIsRoundEnd(){
+
+  boolean getIsRoundEnd() {
     return this.isRoundEnd;
   }
+
   void setPersonalLeftTime(int personalLeftTime) {
     this.personalLeftTime = personalLeftTime;
-    personalTimeLabel.setText("personal: "+personalLeftTime + "sec left");
+    personalTimeLabel.setText("personal: " + personalLeftTime + "sec left");
   }
-  void setRoundLeftTime(int roundLeftTime){
-    this.roundLeftTime=roundLeftTime;
-    roundTimeLabel.setText(" | round: "+roundLeftTime+"sec left");
+
+  void setRoundLeftTime(int roundLeftTime) {
+    this.roundLeftTime = roundLeftTime;
+    roundTimeLabel.setText(" | round: " + roundLeftTime + "sec left");
   }
 
   void setTurnStateValue(int turnStateValue) {
@@ -190,19 +214,39 @@ public class IOFrame extends JFrame {
   public void setSocket(Socket socket) {
     this.socket = socket;
   }
-  public String getUserName(){
+
+  public String getUserName() {
     return this.userName;
   }
-  public void setLastTurn(String lastTurn){
-    this.lastTurn=lastTurn;
+
+  public void setLastTurn(String lastTurn) {
+    this.lastTurn = lastTurn;
   }
-  public String getLastTurn(){
+
+  public String getLastTurn() {
     return this.lastTurn;
   }
-  public void setIsBeforeFirstRound(boolean isBeforeFirstRound){
-    this.isBeforeFirstRound=isBeforeFirstRound;
+
+  public void setIsBeforeFirstRound(boolean isBeforeFirstRound) {
+    this.isBeforeFirstRound = isBeforeFirstRound;
   }
-  public boolean getIsBeforeFirstRound(){
+
+  public boolean getIsBeforeFirstRound() {
     return this.isBeforeFirstRound;
+  }
+
+  public void addClientList(String name) {
+    clientScore.put(name, 0);
+    updateScore();
+  }
+  private void updateScore() {
+    eachClientScore.removeAll();
+    eachClientScore.setLayout(new BoxLayout(eachClientScore, BoxLayout.Y_AXIS));
+    for (String name : clientScore.keySet()) {
+      JLabel label = new JLabel(name + ": " + clientScore.get(name));
+      eachClientScore.add(label);
+    }
+    eachClientScore.revalidate();
+    eachClientScore.repaint();
   }
 }

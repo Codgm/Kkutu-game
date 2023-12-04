@@ -1,5 +1,12 @@
 package org.example.game;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.TimerTask;
 
 public class TimerEvent extends TimerTask {
@@ -8,15 +15,27 @@ public class TimerEvent extends TimerTask {
   private int curTime = 0;
   private final boolean isPersonalTimer;
   private final Words words = Words.getInstance();
+  private ArrayList<Socket> list = null;
 
-  public TimerEvent(int time, boolean isPersonalTimer) {
+  public TimerEvent(int time, boolean isPersonalTimer, ArrayList<Socket> list) {
     this.isPersonalTimer = isPersonalTimer;
     this.curTime = time;
     this.time = time;
+    this.list = list;
   }
 
   @Override
   public void run() {
+    try {
+      sendLeftTime(list,isPersonalTimer);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+    if(!isPersonalTimer){
+      if(words.getIsEnd()){
+        return;
+      }
+    }
     if (curTime > 0) {
       curTime--;
       if(!isPersonalTimer) words.setRoundTime(curTime);
@@ -35,4 +54,18 @@ public class TimerEvent extends TimerTask {
     System.out.println(time);
   }
 
+  private void sendLeftTime(ArrayList<Socket> list,boolean isPersonalTimer) throws IOException {
+    for (int i = 0; i < list.size(); i++) {
+      OutputStream outputStream3 = list.get(i).getOutputStream();
+      OutputStreamWriter outputStreamWriter3 = new OutputStreamWriter(outputStream3,
+          StandardCharsets.UTF_8);
+      PrintWriter writer3 = new PrintWriter(outputStreamWriter3, true);
+      System.out.println(curTime);//for Debugging
+      if (isPersonalTimer) {
+        writer3.println("Personal Timer: " + curTime);
+      } else {
+        writer3.println("Round Timer: " + curTime);
+      }
+    }
+  }
 }

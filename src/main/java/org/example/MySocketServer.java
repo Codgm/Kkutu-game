@@ -89,7 +89,7 @@ public class MySocketServer extends Thread {
         if (wordSetting.getIsEnd()) {
           if (wordSetting.getIsTimeOver()) {
             System.out.println("Time Out");
-            queue.pollTimerEvent();
+            queue.pollTimerEvent(list);
           }
           for (int i = 0; i < list.size(); i++) {
             OutputStream outputStream2 = list.get(i).getOutputStream();
@@ -132,13 +132,20 @@ public class MySocketServer extends Thread {
           break;
         }
         System.out.println("Current Client : " + queue.getCurrentClientName());
+        for (int i = 0; i < list.size(); i++) {
+          OutputStream outputStream3 = list.get(i).getOutputStream();
+          OutputStreamWriter outputStreamWriter3 = new OutputStreamWriter(outputStream3,
+              StandardCharsets.UTF_8);
+          PrintWriter printWriter3 = new PrintWriter(outputStreamWriter3, true);
+          printWriter3.println("turn : " + queue.getCurrentClientName());
+        }
         //처음 세팅이 아닐때,
         if (readValue.equals("Start") && name.equals(queue.getCurrentClientName())
             && wordSetting.getRoundFlag()) {
           Game game = Game.getInstance();
           timer = new Timer();
           wordSetting.setRoundTime(wordSetting.getInitialRoundTime());
-          TimerEvent timerEvent = new TimerEvent(wordSetting.getRoundTime(), false);
+          TimerEvent timerEvent = new TimerEvent(wordSetting.getRoundTime(), false,list);
           for (int i = 0; i < list.size(); i++) {
             OutputStream outputStream2 = list.get(i).getOutputStream();
             // Use OutputStreamWriter to send UTF-8 encoded string
@@ -176,7 +183,7 @@ public class MySocketServer extends Thread {
           int roundTime = Integer.parseInt(bufferedReader.readLine());
           wordSetting.setRoundTime(roundTime);
           wordSetting.setInitialRoundTime(roundTime);
-          TimerEvent timerEvent = new TimerEvent(roundTime, false);
+          TimerEvent timerEvent = new TimerEvent(roundTime, false,list);
           printWriter2.println("Write a Round");
           String round = bufferedReader.readLine();
           wordSetting.setFinalRound(Integer.parseInt(round));
@@ -189,7 +196,7 @@ public class MySocketServer extends Thread {
           game.setCurrentWord(startWord);
           game.setRound(1);
           game.setLastChar(startWord.charAt(0));
-          queue.addTimer();
+          queue.addTimer(list);
           for (int i = 0; i < list.size(); i++) {
             OutputStream outputStream3 = list.get(i).getOutputStream();
             // Use OutputStreamWriter to send UTF-8 encoded string
@@ -218,7 +225,7 @@ public class MySocketServer extends Thread {
           }
           Game game = Game.getInstance();
           if (game.check(readValue)) {
-            queue.pollTimerEvent();
+            queue.pollTimerEvent(list);
             for (int i = 0; i < list.size(); i++) {
               OutputStream outputStream2 = list.get(i).getOutputStream();
               OutputStreamWriter outputStreamWriter2 = new OutputStreamWriter(outputStream2,

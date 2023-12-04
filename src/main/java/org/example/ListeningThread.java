@@ -43,6 +43,14 @@ public class ListeningThread extends Thread {
           if (this.name.equals(name)) {
             writer.println("Client Ok");
           }
+        } else if (tmp.contains("turn : ")) {
+          System.out.println("Client-listening:" + tmp.substring(7));
+          System.out.println("frame name:"+frame.getUserName());
+          if (tmp.substring(7).equals(frame.getUserName())) {
+            frame.setTurnStateValue(1);
+          } else {
+            frame.setTurnStateValue(2);
+          }
         }
         //쓰레기값을 보내야해서..
         else if (tmp.equals("Wrong Word")) {
@@ -53,6 +61,28 @@ public class ListeningThread extends Thread {
           writer.println("Start");
         } else if (tmp.equals("Server Ok")) {
           writer.println("Client Ok");
+        } else if (tmp.contains("Personal Timer: ")) {
+          if (tmp.substring(16).equals("0")) {
+            frame.setPersonalLeftTime(0);//남은 시간이 1로 뜨는 경우가 있음
+            frame.clearRecordDate();
+            frame.pushRecordData("Round time Over\n");
+            frame.pushRecordData("if you wanna continue, type anything\n");
+            frame.setIsRoundEnd(true);
+          }
+          if (!(frame.getIsRoundEnd())) {
+            frame.setPersonalLeftTime(Integer.parseInt(tmp.substring(16)));
+          }
+        } else if (tmp.contains("Round Timer: ")) {
+          if (tmp.substring(13).equals("0")) {
+            frame.setRoundLeftTime(0);//남은 시간이 1로 뜨는 경우가 있음
+            frame.clearRecordDate();
+            frame.pushRecordData("Round time Over\n");
+            frame.pushRecordData("if you wanna continue, type anything\n");
+            frame.setIsRoundEnd(true);
+          }
+          if (!(frame.getIsRoundEnd())) {
+            frame.setRoundLeftTime(Integer.parseInt(tmp.substring(13)));
+          }
         }
 				/*
 				else if(tmp.contains("Game Started")) {

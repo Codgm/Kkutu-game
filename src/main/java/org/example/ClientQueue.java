@@ -1,5 +1,7 @@
 package org.example;
 
+import java.net.Socket;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Timer;
@@ -36,9 +38,9 @@ public class ClientQueue {
         }
     }
 
-    public void addTimer() {
+    public void addTimer(ArrayList<Socket> list) {
         for(String name : names.getNames()){
-            personalTimerEvent.add(new TimerEvent(TimeSet.timeSet(words.getRoundTime()),true));
+            personalTimerEvent.add(new TimerEvent(TimeSet.timeSet(words.getRoundTime()),true,list));
         }
     }
 
@@ -52,8 +54,8 @@ public class ClientQueue {
     public TimerEvent getTimerEvent(){
         return personalTimerEvent.peek();
     }
-    public synchronized void pollTimerEvent(){
-        personalTimerEvent.add(new TimerEvent(TimeSet.timeSet(words.getRoundTime()),true));
+    public synchronized void pollTimerEvent(ArrayList<Socket> list){
+        personalTimerEvent.add(new TimerEvent(TimeSet.timeSet(words.getRoundTime()),true,list));
         personalTimerEvent.peek().cancel();
         personalTimerEvent.poll();
     }

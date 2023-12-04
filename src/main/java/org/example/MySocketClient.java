@@ -18,6 +18,7 @@ public class MySocketClient {
     try {
       Socket socket = null;
       socket = new Socket("localhost", 1234);
+      frame.setSocket(socket);
       System.out.println("Connected to Server");
       OutputStream out = socket.getOutputStream();
       PrintWriter writer = new PrintWriter(out, true);

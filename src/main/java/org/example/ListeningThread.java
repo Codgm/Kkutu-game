@@ -43,6 +43,16 @@ public class ListeningThread extends Thread {
           if (this.name.equals(name)) {
             writer.println("Client Ok");
           }
+        } else if (tmp.contains("turn : ")) {
+          System.out.println("Client-listening:" + tmp.substring(7));
+          System.out.println("frame name:"+frame.getUserName());
+          if (tmp.substring(7).equals(frame.getUserName())) {
+            frame.setTurnStateValue(1);
+            frame.setLastTurn(tmp.substring(7));
+          } else {
+            frame.setTurnStateValue(2);
+            frame.setLastTurn(tmp.substring(7));
+          }
         }
         //쓰레기값을 보내야해서..
         else if (tmp.equals("Wrong Word")) {
@@ -50,9 +60,37 @@ public class ListeningThread extends Thread {
           frame.pushRecordData("Wrong Word\n");
           writer.println("Wrong Word");
         } else if (tmp.equals("Start")) {
+          //frame.setIsRoundEnd(false);
+          //frame.pushRecordData("listener hear-Start\n");
           writer.println("Start");
         } else if (tmp.equals("Server Ok")) {
           writer.println("Client Ok");
+        } else if (tmp.contains("Personal Timer: ")) {
+          if (tmp.substring(16).equals("0")) {
+            frame.setPersonalLeftTime(0);//남은 시간이 1로 뜨는 경우가 있음
+            frame.clearRecordDate();
+            frame.pushRecordData("Round time Over\n");
+            frame.pushRecordData("if you wanna continue, type anything\n");
+            frame.pushRecordData("시작하고싶으면 직전 turn의 client가 type 해야함\n");
+            frame.setIsRoundEnd(true);
+            frame.setTurnStateValue(0);
+          }
+          if (!(frame.getIsRoundEnd())) {
+            frame.setPersonalLeftTime(Integer.parseInt(tmp.substring(16)));
+          }
+        } else if (tmp.contains("Round Timer: ")) {
+          if (tmp.substring(13).equals("0")) {
+            frame.setRoundLeftTime(0);//남은 시간이 1로 뜨는 경우가 있음
+            frame.clearRecordDate();
+            frame.pushRecordData("Round time Over\n");
+            frame.pushRecordData("if you wanna continue, type anything\n");
+            frame.pushRecordData("시작하고싶으면 직전 turn의 client가 type 해야함\n");
+            frame.setIsRoundEnd(true);
+            frame.setTurnStateValue(0);
+          }
+          if (!(frame.getIsRoundEnd())) {
+            frame.setRoundLeftTime(Integer.parseInt(tmp.substring(13)));
+          }
         }
 				/*
 				else if(tmp.contains("Game Started")) {
@@ -65,6 +103,11 @@ public class ListeningThread extends Thread {
         else {
           System.out.println(tmp);//for Debugging
           frame.pushRecordData(tmp + "\n");
+          if(tmp.contains("Current Round : ")){//첫 번째 라운드 시작 이후로 계속 false
+            frame.setIsBeforeFirstRound(false);
+            frame.clearRecordDate();
+            frame.setIsRoundEnd(false);
+          }
         }
       }
 

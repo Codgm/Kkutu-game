@@ -1,6 +1,7 @@
 package org.example;
 
 import java.awt.BorderLayout;
+import java.awt.Font;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import javax.swing.JFrame;
@@ -13,7 +14,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 public class IOFrame extends JFrame {
-
+  Font font = new Font("Malgun Gothic", Font.PLAIN, 10);
   private int leftTime = 0;
   private int turnStateValue = 0;
   private String recordData = "";
@@ -29,12 +30,15 @@ public class IOFrame extends JFrame {
 
   JTextArea recordTextArea = new JTextArea();
   JScrollPane scrollRecord = new JScrollPane(recordTextArea);
-  JLabel inputLabel = new JLabel("input>> ");
+  final JLabel inputLabel = new JLabel("input>> ");
   JTextField inputTextField = new JTextField();
   JLabel turnLabel = new JLabel(turnState[turnStateValue]);
   JLabel timeLabel = new JLabel(leftTime + "sec left");
 
   public IOFrame(String userName) {
+    recordTextArea.setFont(font);
+    inputTextField.setFont(font);
+
     this.setTitle(userName);
     page.setLayout(new BorderLayout());
     inputLayout.setLayout(new BorderLayout());

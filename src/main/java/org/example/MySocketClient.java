@@ -1,5 +1,6 @@
 package org.example;
 
+import java.awt.Font;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,7 +28,8 @@ public class MySocketClient {
       String message;
       String name = null;
       while ((message = reader.readLine()) != null) {
-        System.out.println(message);
+        //System.out.println(message);
+        frame.pushRecordData(message+"\n");
         if (message.equals("Enter The ID")) {
           name = frame.getInputText();
           frame.setFrameTitle(name);

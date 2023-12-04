@@ -62,7 +62,7 @@ public class ListeningThread extends Thread {
 				}
 				 */
         else {
-          //System.out.println(tmp);
+          System.out.println(tmp);//for Debugging
           frame.pushRecordData(tmp + "\n");
         }
       }

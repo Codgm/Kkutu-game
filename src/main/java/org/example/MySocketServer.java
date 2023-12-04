@@ -222,7 +222,10 @@ public class MySocketServer extends Thread {
                   StandardCharsets.UTF_8);
               PrintWriter writer2 = new PrintWriter(outputStreamWriter2, true);
               writer2.println("Correct Word : " + readValue);
-              writer2.println("Mean : " + game.getMean(readValue, game.getLanguage()));
+              writer2.println("Mean :");
+              for(String mean : game.getMean(readValue, game.getLanguage())){
+                writer2.println(mean);
+              }
               writer2.println("Last Char : " + game.getLastChar());
               writer2.println("Current Client : " + queue.getCurrentClientName());
             }

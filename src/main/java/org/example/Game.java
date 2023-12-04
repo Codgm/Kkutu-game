@@ -119,7 +119,7 @@ public class Game {
       means.addAll(Arrays.asList(meanList));
     }
     else {
-      means = MeanApi.getMean(word);
+      means = MeanApi.getMeans(word);
     }
     return means;
   }

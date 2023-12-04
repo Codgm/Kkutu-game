@@ -21,6 +21,8 @@ public class Words {
   private int gameFlag2;
   private boolean isTimeOver=false;
 
+  private int roundTime;
+
   public synchronized boolean getIsTimeOver(){return isTimeOver;}//for Debugging
   public synchronized void setIsTimeOver(boolean flag){this.isTimeOver=flag;}//for Debugging
 
@@ -113,6 +115,14 @@ public class Words {
 
   public synchronized void setIsEnd(boolean isEnd) {
     this.isEnd = isEnd;
+  }
+
+  public synchronized int getRoundTime() {
+    return this.roundTime;
+  }
+
+  public synchronized void setRoundTime(int roundTime) {
+    this.roundTime = roundTime;
   }
 
 }

@@ -117,7 +117,7 @@ public class MySocketServer extends Thread {
             && wordSetting.getRoundFlag()) {
           Game game = Game.getInstance();
           timer = new Timer();
-          TimerEvent timerEvent = new TimerEvent(120, false);
+          TimerEvent timerEvent = new TimerEvent(wordSetting.getRoundTime(), false);
           for (int i = 0; i < list.size(); i++) {
             PrintWriter writer3 = new PrintWriter(list.get(i).getOutputStream(), true);
             writer3.println("Current Round : " + game.getRound());
@@ -132,7 +132,6 @@ public class MySocketServer extends Thread {
           PrintWriter writer2 = new PrintWriter(socket.getOutputStream(), true);
           timer = new Timer();
           Game game = Game.getInstance();
-          TimerEvent timerEvent = new TimerEvent(120, false);
           writer2.println("Write a Language");
           readValue = reader.readLine();
           while (!readValue.equals("ko") && !readValue.equals("en")) {
@@ -144,6 +143,10 @@ public class MySocketServer extends Thread {
           writer2.println("Write a Option(Injeong) 1. Yes, 0. No");
           String option = reader.readLine();
           game.setInjeong(option.equals("1"));
+          writer2.println("Write a RoundTime");
+          int roundTime = Integer.parseInt(reader.readLine());
+          wordSetting.setRoundTime(roundTime);
+          TimerEvent timerEvent = new TimerEvent(roundTime, false);
           writer2.println("Write a Round");
           String round = reader.readLine();
           wordSetting.setFinalRound(Integer.parseInt(round));

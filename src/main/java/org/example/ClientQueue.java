@@ -3,6 +3,7 @@ package org.example;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Timer;
+import org.example.game.Names;
 import org.example.game.TimeSet;
 import org.example.game.TimerEvent;
 import org.example.game.Words;
@@ -14,6 +15,8 @@ public class ClientQueue {
     private Queue<TimerEvent> personalTimerEvent = new LinkedList<>();
 
     private final Words words = Words.getInstance();
+
+    private final Names names = Names.getInstance();
 
 
 
@@ -28,10 +31,14 @@ public class ClientQueue {
 
     public void addClient(String name) {
         queue.add(name);
-        personalTimerEvent.add(new TimerEvent(TimeSet.timeSet(15),true));
-        System.out.println("timerAdded-"+personalTimerEvent.size()+"left");//Debugging
         if (queue.size() == 1) {
             currentClientName = queue.peek();
+        }
+    }
+
+    public void addTimer() {
+        for(String name : names.getNames()){
+            personalTimerEvent.add(new TimerEvent(TimeSet.timeSet(words.getRoundTime()),true));
         }
     }
 

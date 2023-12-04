@@ -47,6 +47,7 @@ public class ListeningThread extends Thread {
         //쓰레기값을 보내야해서..
         else if (tmp.equals("Wrong Word")) {
           System.out.println("Wrong Word");
+          frame.pushRecordData("Wrong Word\n");
           writer.println("Wrong Word");
         } else if (tmp.equals("Start")) {
           writer.println("Start");

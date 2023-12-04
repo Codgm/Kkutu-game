@@ -189,6 +189,7 @@ public class MySocketServer extends Thread {
           game.setCurrentWord(startWord);
           game.setRound(1);
           game.setLastChar(startWord.charAt(0));
+          queue.addTimer();
           for (int i = 0; i < list.size(); i++) {
             OutputStream outputStream3 = list.get(i).getOutputStream();
             // Use OutputStreamWriter to send UTF-8 encoded string

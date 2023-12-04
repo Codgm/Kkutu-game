@@ -7,7 +7,7 @@ public class TimerEvent extends TimerTask {
   private final int time;
   private int curTime = 0;
   private final boolean isPersonalTimer;
-  private Words words = Words.getInstance();
+  private final Words words = Words.getInstance();
 
   public TimerEvent(int time, boolean isPersonalTimer) {
     this.isPersonalTimer = isPersonalTimer;
@@ -19,6 +19,7 @@ public class TimerEvent extends TimerTask {
   public void run() {
     if (curTime > 0) {
       curTime--;
+      words.setRoundTime(curTime);
       if(isPersonalTimer){
         System.out.println(curTime+"sec left");
       }

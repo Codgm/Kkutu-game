@@ -137,6 +137,7 @@ public class MySocketServer extends Thread {
             && wordSetting.getRoundFlag()) {
           Game game = Game.getInstance();
           timer = new Timer();
+          wordSetting.setRoundTime(wordSetting.getInitialRoundTime());
           TimerEvent timerEvent = new TimerEvent(wordSetting.getRoundTime(), false);
           for (int i = 0; i < list.size(); i++) {
             OutputStream outputStream2 = list.get(i).getOutputStream();
@@ -174,6 +175,7 @@ public class MySocketServer extends Thread {
           printWriter2.println("Write a RoundTime");
           int roundTime = Integer.parseInt(bufferedReader.readLine());
           wordSetting.setRoundTime(roundTime);
+          wordSetting.setInitialRoundTime(roundTime);
           TimerEvent timerEvent = new TimerEvent(roundTime, false);
           printWriter2.println("Write a Round");
           String round = bufferedReader.readLine();

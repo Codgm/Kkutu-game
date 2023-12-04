@@ -23,6 +23,8 @@ public class Words {
 
   private int roundTime;
 
+  private int initialRoundTime;
+
   public synchronized boolean getIsTimeOver(){return isTimeOver;}//for Debugging
   public synchronized void setIsTimeOver(boolean flag){this.isTimeOver=flag;}//for Debugging
 
@@ -123,6 +125,14 @@ public class Words {
 
   public synchronized void setRoundTime(int roundTime) {
     this.roundTime = roundTime;
+  }
+
+  public synchronized int getInitialRoundTime() {
+    return this.initialRoundTime;
+  }
+
+  public synchronized void setInitialRoundTime(int initialRoundTime) {
+    this.initialRoundTime = initialRoundTime;
   }
 
 }

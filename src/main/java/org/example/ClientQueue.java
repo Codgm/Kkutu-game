@@ -3,13 +3,17 @@ package org.example;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Timer;
+import org.example.game.TimeSet;
 import org.example.game.TimerEvent;
+import org.example.game.Words;
 
 public class ClientQueue {
     private static ClientQueue instance = null;
     private volatile Queue<String> queue = new LinkedList<>();
     private volatile String currentClientName = null;
     private Queue<TimerEvent> personalTimerEvent = new LinkedList<>();
+
+    private final Words words = Words.getInstance();
 
 
 
@@ -24,7 +28,7 @@ public class ClientQueue {
 
     public void addClient(String name) {
         queue.add(name);
-        personalTimerEvent.add(new TimerEvent(10,true));
+        personalTimerEvent.add(new TimerEvent(TimeSet.timeSet(words.getRoundTime()),true));
         System.out.println("timerAdded-"+personalTimerEvent.size()+"left");//Debugging
         if (queue.size() == 1) {
             currentClientName = queue.peek();
@@ -33,7 +37,6 @@ public class ClientQueue {
 
     public void getNextClient() {
         queue.add(currentClientName);
-        personalTimerEvent.add(new TimerEvent(10,true));
         queue.poll();
         currentClientName = queue.peek();
         System.out.println("timerAdded-"+personalTimerEvent.size()+"left");//Debugging
@@ -43,7 +46,7 @@ public class ClientQueue {
         return personalTimerEvent.peek();
     }
     public synchronized void pollTimerEvent(){
-        personalTimerEvent.add(new TimerEvent(10,true));
+        personalTimerEvent.add(new TimerEvent(TimeSet.timeSet(words.getRoundTime()),true));
         personalTimerEvent.peek().cancel();
         personalTimerEvent.poll();
     }

@@ -243,6 +243,8 @@ public class MySocketServer extends Thread {
                 game.setMission(true);
                 writer2.println("Mission accomplished! You will get a bonus point.");
               }
+              game.updateScore(name, readValue.length());
+              game.setMission(false);
               writer2.println("Mean :");
               for (String mean : game.getMean(readValue, game.getLanguage())) {
                 writer2.println(mean);

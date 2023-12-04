@@ -238,7 +238,7 @@ public class MySocketServer extends Thread {
                   StandardCharsets.UTF_8);
               PrintWriter writer2 = new PrintWriter(outputStreamWriter2, true);
               writer2.println("Correct Word : " + readValue);
-              if (readValue.contains(mission.getMissionWord())) {
+              if (game.getLanguage().equals("ko")&&readValue.contains(mission.getMissionWord())) {
                 game.setMission(true);
                 writer2.println("Mission accomplished! You will get a bonus point.");
               }

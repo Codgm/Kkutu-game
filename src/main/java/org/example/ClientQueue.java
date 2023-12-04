@@ -28,7 +28,7 @@ public class ClientQueue {
 
     public void addClient(String name) {
         queue.add(name);
-        personalTimerEvent.add(new TimerEvent(TimeSet.timeSet(words.getRoundTime()),true));
+        personalTimerEvent.add(new TimerEvent(TimeSet.timeSet(15),true));
         System.out.println("timerAdded-"+personalTimerEvent.size()+"left");//Debugging
         if (queue.size() == 1) {
             currentClientName = queue.peek();

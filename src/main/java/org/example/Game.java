@@ -13,8 +13,8 @@ import org.xml.sax.SAXException;
 
 public class Game {
 
-  private static Game instance = null;
   private static final Map<String, Integer> score = new HashMap<>(); //점수 기록용
+  private static Game instance = null;
   private final ArrayList<String> words = new ArrayList<>();
   private final DataBase db = new DataBase("jdbc:postgresql://localhost:5432/kkutudb", "postgres",
       Passwd.getPasswd());
@@ -28,11 +28,9 @@ public class Game {
 
   private boolean injeong = false;
   private boolean manner = false;
-
+  private boolean mission = false;
   private String language;
-
   private int time = 0; //친 시간을 기억해놓고 점수계산하는데에 사용하기 위해서.
-
   private int chain = 0; //chain까지 정해놔야 점수계산할때 사용할 수 있네?
 
   private Game() {
@@ -47,6 +45,14 @@ public class Game {
       instance = new Game();
     }
     return instance;
+  }
+
+  public boolean getMission() {
+    return mission;
+  }
+
+  public void setMission(boolean mission) {
+    this.mission = mission;
   }
 
   public synchronized String getCurrentWord() {
@@ -112,13 +118,12 @@ public class Game {
   public ArrayList<String> getMean(String word, String lang)
       throws ParserConfigurationException, IOException, SAXException {
     ArrayList<String> means = new ArrayList<>();
-    if(lang.equals("en")) {
+    if (lang.equals("en")) {
       String mean = db.getMeanByWord(word, "en");
       //;기준으로 분리
       String[] meanList = mean.split(";");
       means.addAll(Arrays.asList(meanList));
-    }
-    else {
+    } else {
       means = MeanApi.getMeans(word);
     }
     return means;

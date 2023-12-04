@@ -232,6 +232,7 @@ public class MySocketServer extends Thread {
               PrintWriter writer2 = new PrintWriter(outputStreamWriter2, true);
               writer2.println("Correct Word : " + readValue);
               if (readValue.contains(mission.getMissionWord())) {
+                game.setMission(true);
                 writer2.println("Mission accomplished! You will get a bonus point.");
               }
               writer2.println("Mean :");

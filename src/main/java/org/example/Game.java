@@ -15,6 +15,7 @@ import org.xml.sax.SAXException;
 
 public class Game {
 
+  private final ClientQueue clientQueue = ClientQueue.getInstance();
   private static Game instance = null;
   private static Map<String, Integer> score = new HashMap<>(); //점수 기록용
 
@@ -145,6 +146,9 @@ public class Game {
   }
 
 
+  private void setTime() {
+    time = clientQueue.getTimerEvent().getRemainTime();
+  }
   public synchronized int getRound() {
     return this.round;
   }

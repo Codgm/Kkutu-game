@@ -51,8 +51,8 @@ public class TimerEvent extends TimerTask {
     }
   }
 
-  public void getTime() {
-    System.out.println(time);
+  public int getRemainTime() {
+    return time-curTime;
   }
 
   private void sendLeftTime(ArrayList<Socket> list, boolean isPersonalTimer) throws IOException {

@@ -8,6 +8,8 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ListeningThread extends Thread {
 
@@ -96,8 +98,17 @@ public class ListeningThread extends Thread {
           String newClient =tmp.substring(11);
           frame.addClientList(newClient);
         }
-        else if(tmp.contains("Score: ")){
-
+        else if(tmp.contains("Score: ")){//format: "Score: ${score} Name: ${name}"
+          String regex = "Score: (\\d+) Name: (.+)";
+          Pattern pattern = Pattern.compile(regex);
+          Matcher matcher = pattern.matcher(tmp);
+          if (matcher.matches()) {
+            int score = Integer.parseInt(matcher.group(1));
+            String name = matcher.group(2);
+            frame.updateScore(name, score);
+          } else {
+            throw new IllegalArgumentException("Wrong format");
+          }
         }
 				/*
 				else if(tmp.contains("Game Started")) {

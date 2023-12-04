@@ -237,12 +237,15 @@ public class IOFrame extends JFrame {
 
   public void addClientList(String name) {
     clientScore.put(name, 0);
-    updateScore();
+    updateScore(name,0);
   }
-  private void updateScore() {
+  public void updateScore(String newName, int newScore) {
     eachClientScore.removeAll();
     eachClientScore.setLayout(new BoxLayout(eachClientScore, BoxLayout.Y_AXIS));
     for (String name : clientScore.keySet()) {
+      if(name.equals(newName)){
+        clientScore.put(name, newScore);
+      }
       JLabel label = new JLabel(name + ": " + clientScore.get(name));
       eachClientScore.add(label);
     }

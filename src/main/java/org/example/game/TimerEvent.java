@@ -27,25 +27,26 @@ public class TimerEvent extends TimerTask {
   @Override
   public void run() {
     try {
-      sendLeftTime(list,isPersonalTimer);
+      sendLeftTime(list, isPersonalTimer);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
-    if(!isPersonalTimer){
-      if(words.getIsEnd()){
+    if (!isPersonalTimer) {
+      if (words.getIsEnd()) {
         return;
       }
     }
     if (curTime > 0) {
       curTime--;
-      if(!isPersonalTimer) words.setRoundTime(curTime);
-      if(isPersonalTimer){
-        System.out.println(curTime+"sec left");
+      if (!isPersonalTimer) {
+        words.setRoundTime(curTime);
+      } else {
+        System.out.println(curTime + "sec left");
       }
     } else {
       words.setIsEnd(true);
       words.setIsTimeOver(true);
-      //this.cancel();
+      this.cancel();
       //this.curTime = this.time;
     }
   }
@@ -54,7 +55,7 @@ public class TimerEvent extends TimerTask {
     System.out.println(time);
   }
 
-  private void sendLeftTime(ArrayList<Socket> list,boolean isPersonalTimer) throws IOException {
+  private void sendLeftTime(ArrayList<Socket> list, boolean isPersonalTimer) throws IOException {
     for (int i = 0; i < list.size(); i++) {
       OutputStream outputStream3 = list.get(i).getOutputStream();
       OutputStreamWriter outputStreamWriter3 = new OutputStreamWriter(outputStream3,

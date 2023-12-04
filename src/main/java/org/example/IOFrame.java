@@ -22,6 +22,8 @@ import javax.swing.event.DocumentListener;
 import javax.swing.text.DefaultCaret;
 
 public class IOFrame extends JFrame {
+  private boolean isBeforeFirstRound = true;//처음 한 번만 true고 그 이후로는 항상 false
+  private String lastTurn = null;//마지막으로 누구의 턴이었는지, 라운드 종료됀 상태에서 필요함
   private String userName = null;
   private Socket socket = null;
   Font font = new Font("Malgun Gothic", Font.PLAIN, 10);
@@ -66,6 +68,7 @@ public class IOFrame extends JFrame {
           inputText = inputTextField.getText();
           isInputTextValid = true;
           inputTextField.setText("");
+          isInputTextValid = false;
         }
       }
     });
@@ -90,7 +93,12 @@ public class IOFrame extends JFrame {
 
       private void typedOnTextField() throws IOException {
         // 텍스트 필드의 내용이 변경될 때 실행할 작업
-        if(isRoundEnd){
+        if(isBeforeFirstRound){
+          return;
+        }
+        pushRecordData("if문 탈출");
+        if(isRoundEnd&&lastTurn.equals(getUserName())){
+          pushRecordData("첫 번째 조건");
           clearRecordDate();
           isRoundEnd=false;
           OutputStream out = socket.getOutputStream();
@@ -100,6 +108,10 @@ public class IOFrame extends JFrame {
           //쓰레기값임
           //서버에서 이 값이 들어오면 else문에서 처리함
           //이 값을 인식하게 해둬야 할 듯? 괜찮을 수도
+        }
+        else if(isRoundEnd){
+          pushRecordData(lastTurn+userName+"두 번째 조건");
+          inputTextField.setText("");
         }
       }
     });
@@ -186,5 +198,17 @@ public class IOFrame extends JFrame {
   }
   public String getUserName(){
     return this.userName;
+  }
+  public void setLastTurn(String lastTurn){
+    this.lastTurn=lastTurn;
+  }
+  public String getLastTurn(){
+    return this.lastTurn;
+  }
+  public void setIsBeforeFirstRound(boolean isBeforeFirstRound){
+    this.isBeforeFirstRound=isBeforeFirstRound;
+  }
+  public boolean getIsBeforeFirstRound(){
+    return this.isBeforeFirstRound;
   }
 }

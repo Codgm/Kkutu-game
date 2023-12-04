@@ -48,8 +48,10 @@ public class ListeningThread extends Thread {
           System.out.println("frame name:"+frame.getUserName());
           if (tmp.substring(7).equals(frame.getUserName())) {
             frame.setTurnStateValue(1);
+            frame.setLastTurn(tmp.substring(7));
           } else {
             frame.setTurnStateValue(2);
+            frame.setLastTurn(tmp.substring(7));
           }
         }
         //쓰레기값을 보내야해서..
@@ -67,7 +69,9 @@ public class ListeningThread extends Thread {
             frame.clearRecordDate();
             frame.pushRecordData("Round time Over\n");
             frame.pushRecordData("if you wanna continue, type anything\n");
+            frame.pushRecordData("시작하고싶으면 직전 turn의 client가 type 해야함\n");
             frame.setIsRoundEnd(true);
+            frame.setTurnStateValue(0);
           }
           if (!(frame.getIsRoundEnd())) {
             frame.setPersonalLeftTime(Integer.parseInt(tmp.substring(16)));
@@ -78,7 +82,9 @@ public class ListeningThread extends Thread {
             frame.clearRecordDate();
             frame.pushRecordData("Round time Over\n");
             frame.pushRecordData("if you wanna continue, type anything\n");
+            frame.pushRecordData("시작하고싶으면 직전 turn의 client가 type 해야함\n");
             frame.setIsRoundEnd(true);
+            frame.setTurnStateValue(0);
           }
           if (!(frame.getIsRoundEnd())) {
             frame.setRoundLeftTime(Integer.parseInt(tmp.substring(13)));
@@ -95,6 +101,9 @@ public class ListeningThread extends Thread {
         else {
           System.out.println(tmp);//for Debugging
           frame.pushRecordData(tmp + "\n");
+          if(tmp.contains("Current Round : ")){//첫 번째 라운드 시작 이후로 계속 false
+            frame.setIsBeforeFirstRound(false);
+          }
         }
       }
 

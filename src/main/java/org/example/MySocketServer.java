@@ -188,7 +188,11 @@ public class MySocketServer extends Thread {
           game.setRound(1);
           game.setLastChar(startWord.charAt(0));
           for (int i = 0; i < list.size(); i++) {
-            PrintWriter writer3 = new PrintWriter(list.get(i).getOutputStream(), true);
+            OutputStream outputStream3 = list.get(i).getOutputStream();
+            // Use OutputStreamWriter to send UTF-8 encoded string
+            OutputStreamWriter outputStreamWriter3 = new OutputStreamWriter(outputStream3,
+                StandardCharsets.UTF_8);
+            PrintWriter writer3 = new PrintWriter(outputStreamWriter3, true);
             writer3.println("Set Round : " + wordSetting.getFinalRound());
             writer3.println("Current Round : " + game.getRound());
             writer3.println("Round Word : " + game.getStartWord());
@@ -211,7 +215,11 @@ public class MySocketServer extends Thread {
           if (game.check(readValue)) {
             queue.pollTimerEvent();
             for (int i = 0; i < list.size(); i++) {
-              PrintWriter writer2 = new PrintWriter(list.get(i).getOutputStream(), true);
+              OutputStream outputStream2 = list.get(i).getOutputStream();
+              OutputStreamWriter outputStreamWriter2 = new OutputStreamWriter(outputStream2,
+                  StandardCharsets.UTF_8);
+              PrintWriter writer2 = new PrintWriter(outputStreamWriter2, true);
+
               writer2.println("Correct Word : " + readValue);
               writer2.println("Mean : " + game.getMean(readValue, game.getLanguage()));
               writer2.println("Last Char : " + game.getLastChar());
@@ -221,7 +229,10 @@ public class MySocketServer extends Thread {
             //쓰레기값을 보내야 while문에서 readline을 받은후에 해당문으로 다시 돌아올 수 있음.
             printWriter.println("Wrong Word");
             for (int i = 0; i < list.size(); i++) {
-              PrintWriter writer2 = new PrintWriter(list.get(i).getOutputStream(), true);
+              OutputStream outputStream2 = list.get(i).getOutputStream();
+              OutputStreamWriter outputStreamWriter2 = new OutputStreamWriter(outputStream2,
+                  StandardCharsets.UTF_8);
+              PrintWriter writer2 = new PrintWriter(outputStreamWriter2, true);
               writer2.println(name + " : " + readValue);
             }
           }
@@ -229,7 +240,10 @@ public class MySocketServer extends Thread {
         } else {
           //내 차례가 아닐때에는 채팅 모드로..
           for (int i = 0; i < list.size(); i++) {
-            PrintWriter writer2 = new PrintWriter(list.get(i).getOutputStream(), true);
+            OutputStream outputStream2 = list.get(i).getOutputStream();
+            OutputStreamWriter outputStreamWriter2 = new OutputStreamWriter(outputStream2,
+                StandardCharsets.UTF_8);
+            PrintWriter writer2 = new PrintWriter(outputStreamWriter2, true);
             writer2.println(name + " : " + readValue);
           }
         }

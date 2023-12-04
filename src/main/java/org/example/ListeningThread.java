@@ -60,6 +60,8 @@ public class ListeningThread extends Thread {
           frame.pushRecordData("Wrong Word\n");
           writer.println("Wrong Word");
         } else if (tmp.equals("Start")) {
+          //frame.setIsRoundEnd(false);
+          //frame.pushRecordData("listener hear-Start\n");
           writer.println("Start");
         } else if (tmp.equals("Server Ok")) {
           writer.println("Client Ok");
@@ -103,6 +105,8 @@ public class ListeningThread extends Thread {
           frame.pushRecordData(tmp + "\n");
           if(tmp.contains("Current Round : ")){//첫 번째 라운드 시작 이후로 계속 false
             frame.setIsBeforeFirstRound(false);
+            frame.clearRecordDate();
+            frame.setIsRoundEnd(false);
           }
         }
       }

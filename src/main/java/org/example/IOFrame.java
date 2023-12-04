@@ -66,7 +66,9 @@ public class IOFrame extends JFrame {
       public void keyTyped(KeyEvent e) {
         if (e.getKeyChar() == '\n') {
           inputText = inputTextField.getText();
-          isInputTextValid = true;
+          if(!isRoundEnd) {
+            isInputTextValid = true;
+          }
           inputTextField.setText("");
           isInputTextValid = false;
         }
@@ -96,22 +98,14 @@ public class IOFrame extends JFrame {
         if(isBeforeFirstRound){
           return;
         }
-        pushRecordData("if문 탈출");
         if(isRoundEnd&&lastTurn.equals(getUserName())){
-          pushRecordData("첫 번째 조건");
-          clearRecordDate();
           isRoundEnd=false;
           OutputStream out = socket.getOutputStream();
           OutputStreamWriter outputStreamWriter = new OutputStreamWriter(out, StandardCharsets.UTF_8);
           PrintWriter writer = new PrintWriter(outputStreamWriter, true);
           writer.println("Start");
-          //쓰레기값임
-          //서버에서 이 값이 들어오면 else문에서 처리함
-          //이 값을 인식하게 해둬야 할 듯? 괜찮을 수도
         }
         else if(isRoundEnd){
-          pushRecordData(lastTurn+userName+"두 번째 조건");
-          inputTextField.setText("");
         }
       }
     });

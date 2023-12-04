@@ -13,6 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Timer;
+import org.example.game.Mission;
 import org.example.game.Names;
 import org.example.game.Passwd;
 import org.example.game.TimerEvent;
@@ -86,6 +87,7 @@ public class MySocketServer extends Thread {
 
       while (true) {
         Timer timer = new Timer();
+        Mission mission = new Mission();
         if (wordSetting.getIsEnd()) {
           if (wordSetting.getIsTimeOver()) {
             System.out.println("Time Out");
@@ -212,11 +214,15 @@ public class MySocketServer extends Thread {
             //TimerEvent personalTimerEvent = new TimerEvent(10,true);
             timer2.scheduleAtFixedRate(queue.getTimerEvent(), 0, 1000);
           }
+          Game game = Game.getInstance();
+          if (game.getLanguage().equals("ko")) {
+            mission.makeRandomMissionChar();
+            printWriter.println("Mission word: " + mission.getMissionWord());
+          }
           readValue = bufferedReader.readLine();
           if (wordSetting.getIsEnd()) {
             continue;
           }
-          Game game = Game.getInstance();
           if (game.check(readValue)) {
             queue.pollTimerEvent();
             for (int i = 0; i < list.size(); i++) {
@@ -225,8 +231,11 @@ public class MySocketServer extends Thread {
                   StandardCharsets.UTF_8);
               PrintWriter writer2 = new PrintWriter(outputStreamWriter2, true);
               writer2.println("Correct Word : " + readValue);
+              if (readValue.contains(mission.getMissionWord())) {
+                writer2.println("Mission accomplished! You will get a bonus point.");
+              }
               writer2.println("Mean :");
-              for(String mean : game.getMean(readValue, game.getLanguage())){
+              for (String mean : game.getMean(readValue, game.getLanguage())) {
                 writer2.println(mean);
               }
               writer2.println("Last Char : " + game.getLastChar());

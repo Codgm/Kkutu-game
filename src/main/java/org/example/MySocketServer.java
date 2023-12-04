@@ -168,7 +168,7 @@ public class MySocketServer extends Thread {
           }
           String language = readValue;
           game.setLanguage(language);
-          printWriter2.println("Write a Option(1. injeong(Only Korean), 2. manner)");
+          printWriter2.println("Write a Option(Injeong) : 1. Injeong 0. Not Injeong");
           String option = bufferedReader.readLine();
           game.setInjeong(option.equals("1"));
           printWriter2.println("Write a RoundTime");
@@ -201,7 +201,9 @@ public class MySocketServer extends Thread {
           }
           printWriter.println("Server Ok");
           timer.scheduleAtFixedRate(timerEvent, 0, 1000);
-        } else if (wordSetting.getRoundFlag() && name.equals(queue.getCurrentClientName())) {
+        }
+        //게임 자기차례일떄..
+        else if (wordSetting.getRoundFlag() && name.equals(queue.getCurrentClientName())) {
           if (readValue.equals("Client Ok")) {
             Timer timer2 = new Timer();
             //TimerEvent personalTimerEvent = new TimerEvent(10,true);
@@ -219,7 +221,6 @@ public class MySocketServer extends Thread {
               OutputStreamWriter outputStreamWriter2 = new OutputStreamWriter(outputStream2,
                   StandardCharsets.UTF_8);
               PrintWriter writer2 = new PrintWriter(outputStreamWriter2, true);
-
               writer2.println("Correct Word : " + readValue);
               writer2.println("Mean : " + game.getMean(readValue, game.getLanguage()));
               writer2.println("Last Char : " + game.getLastChar());

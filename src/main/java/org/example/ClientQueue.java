@@ -9,7 +9,9 @@ public class ClientQueue {
     private static ClientQueue instance = null;
     private volatile Queue<String> queue = new LinkedList<>();
     private volatile String currentClientName = null;
-    private Queue<TimerEvent> personalTimerEvent=new LinkedList<>();
+    private Queue<TimerEvent> personalTimerEvent = new LinkedList<>();
+
+
 
     private ClientQueue() {}
 

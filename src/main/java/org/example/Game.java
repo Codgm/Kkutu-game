@@ -1,5 +1,7 @@
 package org.example;
 
+import static java.lang.Math.pow;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,8 +15,10 @@ import org.xml.sax.SAXException;
 
 public class Game {
 
-  private static final Map<String, Integer> score = new HashMap<>(); //점수 기록용
   private static Game instance = null;
+  private static Map<String, Integer> score = new HashMap<>(); //점수 기록용
+
+  private Map<String, Integer> roundScore = new HashMap<>(); //라운드별 점수 기록용
   private final ArrayList<String> words = new ArrayList<>();
   private final DataBase db = new DataBase("jdbc:postgresql://localhost:5432/kkutudb", "postgres",
       Passwd.getPasswd());
@@ -103,27 +107,38 @@ public class Game {
   public synchronized void updateRound() {
     //점수 처리.
     String loser = queue.getCurrentClientName();
-    //score.replace(loser, );
+    score.replace(loser, score.get(loser) - roundScore.get(loser));
     setRound(getRound() + 1);
     setLastChar(startWord.charAt(getRound() - 1));
     setCurrentWord(null);
+    for(String name : names.getNames()){
+      roundScore.replace(name,0);
+    }
     words.clear();
   }
 
+
   public synchronized void updateScore(String name, int length) {
-    //점수 처리.
-    //score.replace(name,);
+    int tmp = (int) (2*(pow((5 + 7*length), 0.74) + 0.88 * chain)*(1 - time/60)); //time / 60은 걸린시간/지금 라운드의 남은시간.
+    score.replace(name, score.get(name) + tmp);
+    roundScore.replace(name, roundScore.get(name) + tmp);
   }
 
   public ArrayList<String> getMean(String word, String lang)
       throws ParserConfigurationException, IOException, SAXException {
     ArrayList<String> means = new ArrayList<>();
-    if (lang.equals("en")) {
+    //어인정 판단. 어인정은 뜻이 없음.
+    if(db.selectType(word, lang).contains("INJEONG")) {
+      means.add("어인정은 뜻이 없습니다");
+      return means;
+    }
+    if(lang.equals("en")) {
       String mean = db.getMeanByWord(word, "en");
       //;기준으로 분리
       String[] meanList = mean.split(";");
       means.addAll(Arrays.asList(meanList));
-    } else {
+    }
+    else {
       means = MeanApi.getMeans(word);
     }
     return means;

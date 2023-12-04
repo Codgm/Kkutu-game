@@ -62,6 +62,21 @@ public class DataBase {
     }
   }
 
+  public String selectType(String string, String lang) {
+    try {
+      String query = "SELECT type FROM public.kkutu_" + lang + " WHERE _id = '" + string + "'";
+      PreparedStatement preparedStatement = connection.prepareStatement(query);
+      ResultSet resultSet = preparedStatement.executeQuery();
+      if (resultSet.next()) {
+        return resultSet.getString("type");
+      } else {
+        return null;
+      }
+    } catch (SQLException e) {
+      return null;
+    }
+  }
+
 
   public ArrayList<String> selectWords(int round, String lang, boolean injeong) {
     //우선 en으로 설정. 추후 Parameter로 받아서 언어 설정할 수 있게 변경.

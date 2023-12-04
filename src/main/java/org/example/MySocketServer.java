@@ -232,6 +232,7 @@ public class MySocketServer extends Thread {
           }
           if (game.check(readValue)) {
             queue.pollTimerEvent(list);
+            game.setChain(game.getChain() + 1);
             for (int i = 0; i < list.size(); i++) {
               OutputStream outputStream2 = list.get(i).getOutputStream();
               OutputStreamWriter outputStreamWriter2 = new OutputStreamWriter(outputStream2,

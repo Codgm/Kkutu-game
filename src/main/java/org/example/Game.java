@@ -11,12 +11,15 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.example.game.MeanApi;
 import org.example.game.Names;
 import org.example.game.Passwd;
+import org.example.game.Words;
 import org.xml.sax.SAXException;
 
 public class Game {
 
   private final ClientQueue clientQueue = ClientQueue.getInstance();
   private static Game instance = null;
+
+  private final Words wordSetting = Words.getInstance();
   private static Map<String, Integer> score = new HashMap<>(); //점수 기록용
 
   private Map<String, Integer> roundScore = new HashMap<>(); //라운드별 점수 기록용
@@ -115,12 +118,13 @@ public class Game {
     for(String name : names.getNames()){
       roundScore.replace(name,0);
     }
+    chain = 0;
     words.clear();
   }
 
 
   public synchronized void updateScore(String name, int length) {
-    int tmp = (int) (2*(pow((5 + 7*length), 0.74) + 0.88 * chain)*(1 - time/60)); //time / 60은 걸린시간/지금 라운드의 남은시간.
+    int tmp = (int) (2*(pow((5 + 7*length), 0.74) + 0.88 * chain)*(1 - clientQueue.getTimerEvent().getRemainTime()/wordSetting.getRoundTime()) * (1 + 0.5 * (mission ? 1 : 0)));
     score.replace(name, score.get(name) + tmp);
     roundScore.replace(name, roundScore.get(name) + tmp);
   }
@@ -146,9 +150,6 @@ public class Game {
   }
 
 
-  private void setTime() {
-    time = clientQueue.getTimerEvent().getRemainTime();
-  }
   public synchronized int getRound() {
     return this.round;
   }

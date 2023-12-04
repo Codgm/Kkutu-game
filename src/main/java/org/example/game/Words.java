@@ -22,8 +22,10 @@ public class Words {
   private boolean isTimeOver=false;
 
   private int roundTime;
-
   private int initialRoundTime;
+
+  private int PersonalTime;
+  private int initialPersonalTime;
 
   public synchronized boolean getIsTimeOver(){return isTimeOver;}//for Debugging
   public synchronized void setIsTimeOver(boolean flag){this.isTimeOver=flag;}//for Debugging
@@ -133,6 +135,22 @@ public class Words {
 
   public synchronized void setInitialRoundTime(int initialRoundTime) {
     this.initialRoundTime = initialRoundTime;
+  }
+
+  public synchronized int getPersonalTime() {
+    return this.PersonalTime;
+  }
+
+  public synchronized void setPersonalTime(int PersonalTime) {
+    this.PersonalTime = PersonalTime;
+  }
+
+  public synchronized int getInitialPersonalTime() {
+    return this.initialPersonalTime;
+  }
+
+  public synchronized void setInitialPersonalTime(int initialPersonalTime) {
+    this.initialPersonalTime = initialPersonalTime;
   }
 
 }

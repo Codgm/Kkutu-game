@@ -45,6 +45,7 @@ public class Game {
     db.connect();
     for (String name : names.getNames()) {
       score.put(name, 0);
+      roundScore.put(name, 0);
     }
   }
 

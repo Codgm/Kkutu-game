@@ -253,8 +253,8 @@ public class MySocketServer extends Thread {
                 writer2.println("Mission accomplished! You will get a bonus point.");
               }
               game.updateScore(name, readValue.length());
-              System.out.println("Score : " + game.getScore(name)+" Name: "+name);//Maybe here is error
-              writer2.println("Score : " + game.getScore(name)+" Name: "+name);//Maybe here is error
+              System.out.println("Score: " + game.getScore(name)+" Name: "+name);//Maybe here is error
+              writer2.println("Score: " + game.getScore(name)+" Name: "+name);//Maybe here is error
               game.setMission(false);
               writer2.println("Mean :");
               for (String mean : game.getMean(readValue, game.getLanguage())) {

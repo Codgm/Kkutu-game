@@ -60,11 +60,12 @@ public class IOFrame extends JFrame {
   JLabel turnLabel = new JLabel(turnState[turnStateValue]);
   JLabel personalTimeLabel = new JLabel("personal: " + personalLeftTime + "sec left");
   JLabel roundTimeLabel = new JLabel(" | round: " + roundLeftTime + "sec left");
-  JLabel scoreLabel = new JLabel("Score");
+  JLabel scoreLabel = new JLabel("    Score    ");
 
   public IOFrame(String userName) {
     recordTextArea.setFont(font);
     inputTextField.setFont(font);
+    inputLabel.setFont(new Font("Malgun Gothic Bold", Font.PLAIN, 15));
 
     this.setTitle(userName);
     mainPage.setLayout(new BorderLayout());
@@ -144,7 +145,7 @@ public class IOFrame extends JFrame {
 
     this.add(mainPage);
 
-    setSize(500, 140);
+    setSize(700, 340);
     setResizable(true);
     setLocationRelativeTo(null);
     setDefaultCloseOperation(EXIT_ON_CLOSE);

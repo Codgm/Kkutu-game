@@ -242,6 +242,7 @@ public class MySocketServer extends Thread {
           if (game.check(readValue)) {
             queue.pollTimerEvent(list);
             game.setChain(game.getChain() + 1);
+            game.updateScore(name, readValue.length());
             for (int i = 0; i < list.size(); i++) {
               OutputStream outputStream2 = list.get(i).getOutputStream();
               OutputStreamWriter outputStreamWriter2 = new OutputStreamWriter(outputStream2,
@@ -252,7 +253,6 @@ public class MySocketServer extends Thread {
                 game.setMission(true);
                 writer2.println("Mission accomplished! You will get a bonus point.");
               }
-              game.updateScore(name, readValue.length());
               System.out.println("Score: " + game.getScore(name)+" Name: "+name);//Maybe here is error
               writer2.println("Score: " + game.getScore(name)+" Name: "+name);//Maybe here is error
               game.setMission(false);

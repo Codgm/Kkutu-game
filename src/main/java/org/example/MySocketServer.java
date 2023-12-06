@@ -121,7 +121,6 @@ public class MySocketServer extends Thread {
               printWriter2.println("Game Ended");
               printWriter2.println("Loser : " + queue.getCurrentClientName());
             }
-            break;
           } else {
             game.updateRound();
             OutputStream outputStream2 = socket.getOutputStream();
@@ -138,6 +137,7 @@ public class MySocketServer extends Thread {
           }
         }
         readValue = bufferedReader.readLine();
+        System.out.println("readValue : " + readValue);
         if (readValue == null) {
           break;
         }
@@ -149,16 +149,10 @@ public class MySocketServer extends Thread {
           PrintWriter printWriter3 = new PrintWriter(outputStreamWriter3, true);
           printWriter3.println("turn : " + queue.getCurrentClientName());
         }
+        System.out.println("Client : " + name + " Message : " + readValue);
         if(readValue.equals("Reset")) {
           Game game = Game.getInstance();
-          for (Socket value : list) {
-            OutputStream outputStream2 = value.getOutputStream();
-            // Use OutputStreamWriter to send UTF-8 encoded string
-            OutputStreamWriter outputStreamWriter2 = new OutputStreamWriter(outputStream2,
-                StandardCharsets.UTF_8);
-            PrintWriter printWriter2 = new PrintWriter(outputStreamWriter2, true);
-            printWriter2.println("Reset");
-          }
+          ArrayList<Socket> temp=new ArrayList<>(list);
           game.reset();
           queue.reset();
           wordSetting.reset();
@@ -166,6 +160,15 @@ public class MySocketServer extends Thread {
           timerEvent=null;
           timer.cancel();
           names.reset();
+          list.clear();
+          for (Socket value : temp) {
+            OutputStream outputStream2 = value.getOutputStream();
+            // Use OutputStreamWriter to send UTF-8 encoded string
+            OutputStreamWriter outputStreamWriter2 = new OutputStreamWriter(outputStream2,
+                StandardCharsets.UTF_8);
+            PrintWriter printWriter2 = new PrintWriter(outputStreamWriter2, true);
+            printWriter2.println("Reset");
+          }
         }
         //처음 세팅이 아닐때,
         else if (readValue.equals("Start") && name.equals(queue.getCurrentClientName())

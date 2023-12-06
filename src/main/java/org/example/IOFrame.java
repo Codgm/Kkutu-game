@@ -74,6 +74,7 @@ public class IOFrame extends JFrame {
       public void keyTyped(KeyEvent e) {
         if (e.getKeyChar() == '\n') {
           inputText = inputTextField.getText();
+          System.out.println("inputText: " + inputText);
           if(inputText.equals("Reset")) {
             isInputTextValid = true;
             inputTextField.setText("");

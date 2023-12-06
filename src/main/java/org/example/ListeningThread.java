@@ -13,14 +13,16 @@ import java.util.regex.Pattern;
 
 public class ListeningThread extends Thread {
 
+  WritingThread t2;
   private final String name;
   private final Socket socket;
   private final IOFrame frame;
 
-  public ListeningThread(Socket socket, CurrentClient currentClient, String name, IOFrame frame) {
+  public ListeningThread(Socket socket, CurrentClient currentClient, String name, IOFrame frame,WritingThread t2) {
     this.socket = socket;
     this.name = name;
     this.frame = frame;
+    this.t2 = t2;
   }
 
   public void run() {
@@ -103,7 +105,6 @@ public class ListeningThread extends Thread {
             throw new IllegalArgumentException("Wrong format");
           }
         } else if (tmp.equals("Reset")) {
-          Thread.sleep(1000);
           frame.reset();
           MySocketClient.make();
         }

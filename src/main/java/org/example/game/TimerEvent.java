@@ -59,8 +59,8 @@ public class TimerEvent extends TimerTask {
   }
 
   private void sendLeftTime(ArrayList<Socket> list, boolean isPersonalTimer) throws IOException {
-    for (int i = 0; i < list.size(); i++) {
-      OutputStream outputStream3 = list.get(i).getOutputStream();
+    for (Socket socket : list) {
+      OutputStream outputStream3 = socket.getOutputStream();
       OutputStreamWriter outputStreamWriter3 = new OutputStreamWriter(outputStream3,
           StandardCharsets.UTF_8);
       PrintWriter writer3 = new PrintWriter(outputStreamWriter3, true);

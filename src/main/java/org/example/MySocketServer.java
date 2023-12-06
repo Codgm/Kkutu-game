@@ -80,8 +80,8 @@ public class MySocketServer extends Thread {
       name = readValue;
       names.add(name);
       queue.addClient(name);
-      for (int i = 0; i < list.size(); i++) {//name보다 list가 먼저 add되기 때문에 ㄱㅊ
-        OutputStream outputStream2 = list.get(i).getOutputStream();
+      for (Socket element : list) {//name보다 list가 먼저 add되기 때문에 ㄱㅊ
+        OutputStream outputStream2 = element.getOutputStream();
         OutputStreamWriter outputStreamWriter2 = new OutputStreamWriter(outputStream2,
             StandardCharsets.UTF_8);
         PrintWriter printWriter2 = new PrintWriter(outputStreamWriter2, true);
@@ -100,8 +100,8 @@ public class MySocketServer extends Thread {
             System.out.println("Time Out");
             queue.pollTimerEvent(list);
           }
-          for (int i = 0; i < list.size(); i++) {
-            OutputStream outputStream2 = list.get(i).getOutputStream();
+          for (Socket item : list) {
+            OutputStream outputStream2 = item.getOutputStream();
             // Use OutputStreamWriter to send UTF-8 encoded string
             OutputStreamWriter outputStreamWriter2 = new OutputStreamWriter(outputStream2,
                 StandardCharsets.UTF_8);
@@ -111,8 +111,8 @@ public class MySocketServer extends Thread {
           }
           Game game = Game.getInstance();
           if (game.getRound() == wordSetting.getFinalRound()) {
-            for (int i = 0; i < list.size(); i++) {
-              OutputStream outputStream2 = list.get(i).getOutputStream();
+            for (Socket value : list) {
+              OutputStream outputStream2 = value.getOutputStream();
               // Use OutputStreamWriter to send UTF-8 encoded string
               OutputStreamWriter outputStreamWriter2 = new OutputStreamWriter(outputStream2,
                   StandardCharsets.UTF_8);
@@ -141,8 +141,8 @@ public class MySocketServer extends Thread {
           break;
         }
         System.out.println("Current Client : " + queue.getCurrentClientName());
-        for (int i = 0; i < list.size(); i++) {
-          OutputStream outputStream3 = list.get(i).getOutputStream();
+        for (Socket item : list) {
+          OutputStream outputStream3 = item.getOutputStream();
           OutputStreamWriter outputStreamWriter3 = new OutputStreamWriter(outputStream3,
               StandardCharsets.UTF_8);
           PrintWriter printWriter3 = new PrintWriter(outputStreamWriter3, true);
@@ -155,8 +155,8 @@ public class MySocketServer extends Thread {
           timer = new Timer();
           wordSetting.setRoundTime(wordSetting.getInitialRoundTime());
           TimerEvent timerEvent = new TimerEvent(wordSetting.getRoundTime(), false, list);
-          for (int i = 0; i < list.size(); i++) {
-            OutputStream outputStream2 = list.get(i).getOutputStream();
+          for (Socket value : list) {
+            OutputStream outputStream2 = value.getOutputStream();
             // Use OutputStreamWriter to send UTF-8 encoded string
             OutputStreamWriter outputStreamWriter2 = new OutputStreamWriter(outputStream2,
                 StandardCharsets.UTF_8);
@@ -206,8 +206,8 @@ public class MySocketServer extends Thread {
           game.setRound(1);
           game.setLastChar(startWord.charAt(0));
           queue.addTimer(list);
-          for (int i = 0; i < list.size(); i++) {
-            OutputStream outputStream3 = list.get(i).getOutputStream();
+          for (Socket value : list) {
+            OutputStream outputStream3 = value.getOutputStream();
             // Use OutputStreamWriter to send UTF-8 encoded string
             OutputStreamWriter outputStreamWriter3 = new OutputStreamWriter(outputStream3,
                 StandardCharsets.UTF_8);
@@ -241,8 +241,8 @@ public class MySocketServer extends Thread {
             queue.pollTimerEvent(list);
             game.setChain(game.getChain() + 1);
             game.updateScore(name, readValue.length());
-            for (int i = 0; i < list.size(); i++) {
-              OutputStream outputStream2 = list.get(i).getOutputStream();
+            for (Socket value : list) {
+              OutputStream outputStream2 = value.getOutputStream();
               OutputStreamWriter outputStreamWriter2 = new OutputStreamWriter(outputStream2,
                   StandardCharsets.UTF_8);
               PrintWriter writer2 = new PrintWriter(outputStreamWriter2, true);
@@ -266,8 +266,8 @@ public class MySocketServer extends Thread {
           } else {
             //쓰레기값을 보내야 while문에서 readline을 받은후에 해당문으로 다시 돌아올 수 있음.
             printWriter.println("Wrong Word");
-            for (int i = 0; i < list.size(); i++) {
-              OutputStream outputStream2 = list.get(i).getOutputStream();
+            for (Socket value : list) {
+              OutputStream outputStream2 = value.getOutputStream();
               OutputStreamWriter outputStreamWriter2 = new OutputStreamWriter(outputStream2,
                   StandardCharsets.UTF_8);
               PrintWriter writer2 = new PrintWriter(outputStreamWriter2, true);
@@ -277,8 +277,8 @@ public class MySocketServer extends Thread {
 
         } else {
           //내 차례가 아닐때에는 채팅 모드로..
-          for (int i = 0; i < list.size(); i++) {
-            OutputStream outputStream2 = list.get(i).getOutputStream();
+          for (Socket value : list) {
+            OutputStream outputStream2 = value.getOutputStream();
             OutputStreamWriter outputStreamWriter2 = new OutputStreamWriter(outputStream2,
                 StandardCharsets.UTF_8);
             PrintWriter writer2 = new PrintWriter(outputStreamWriter2, true);

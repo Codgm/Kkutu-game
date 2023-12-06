@@ -171,7 +171,7 @@ public class MySocketServer extends Thread {
           game.reset();
           queue.reset();
           wordSetting.reset();
-          timerEvent.cancel();
+          if(timerEvent != null) timerEvent.cancel();
           timerEvent=null;
           timer.cancel();
           names.reset();

@@ -113,7 +113,6 @@ public class IOFrame extends JFrame {
               StandardCharsets.UTF_8);
           PrintWriter writer = new PrintWriter(outputStreamWriter, true);
           writer.println("Start");
-        } else if (isRoundEnd) {
         }
       }
     });

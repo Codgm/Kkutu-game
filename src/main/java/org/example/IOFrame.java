@@ -74,7 +74,12 @@ public class IOFrame extends JFrame {
       public void keyTyped(KeyEvent e) {
         if (e.getKeyChar() == '\n') {
           inputText = inputTextField.getText();
-          if (!isRoundEnd) {
+          if(inputText.equals("Reset")) {
+            isInputTextValid = true;
+            inputTextField.setText("");
+            isInputTextValid = false;
+          }
+          else if (!isRoundEnd) {
             isInputTextValid = true;
           }
           inputTextField.setText("");
@@ -226,5 +231,9 @@ public class IOFrame extends JFrame {
     }
     eachClientScore.revalidate();
     eachClientScore.repaint();
+  }
+
+  public void reset() {
+    this.dispose();
   }
 }

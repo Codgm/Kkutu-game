@@ -9,38 +9,39 @@ import java.util.Scanner;
 
 public class MySocketClient {
 
-  private static final IOFrame frame = new IOFrame("Client");
+  public static void make() throws IOException {
+    IOFrame frame = new IOFrame("Client");
+    Socket socket;
+    socket = new Socket("localhost", 1234);
+    frame.setSocket(socket);
+    System.out.println("Connected to Server");
+    OutputStream out = socket.getOutputStream();
+    PrintWriter writer = new PrintWriter(out, true);
+    BufferedReader reader = new BufferedReader(
+        new java.io.InputStreamReader(socket.getInputStream()));
+    Scanner scanner = new Scanner(System.in);
+    CurrentClient currentClient = new CurrentClient();
+    String message;
+    String name = null;
+    while ((message = reader.readLine()) != null) {
+      //System.out.println(message);
+      frame.pushRecordData(message + "\n");
+      if (message.equals("Enter The ID")) {
+        name = frame.getInputText();
+        frame.setFrameTitle(name);
+        writer.println(name);
+        break;
+      }
+    }
 
+    ListeningThread t1 = new ListeningThread(socket, currentClient, name, frame);
+    WritingThread t2 = new WritingThread(socket, currentClient, frame);
+    t1.start();
+    t2.start(); // WritingThread Start
+  }
   public static void main(String[] args) {
     try {
-      Socket socket;
-      socket = new Socket("localhost", 1234);
-      frame.setSocket(socket);
-      System.out.println("Connected to Server");
-      OutputStream out = socket.getOutputStream();
-      PrintWriter writer = new PrintWriter(out, true);
-      BufferedReader reader = new BufferedReader(
-          new java.io.InputStreamReader(socket.getInputStream()));
-      Scanner scanner = new Scanner(System.in);
-      CurrentClient currentClient = new CurrentClient();
-      String message;
-      String name = null;
-      while ((message = reader.readLine()) != null) {
-        //System.out.println(message);
-        frame.pushRecordData(message + "\n");
-        if (message.equals("Enter The ID")) {
-          name = frame.getInputText();
-          frame.setFrameTitle(name);
-          writer.println(name);
-          break;
-        }
-      }
-
-      ListeningThread t1 = new ListeningThread(socket, currentClient, name, frame);
-      WritingThread t2 = new WritingThread(socket, currentClient, frame);
-      t1.start();
-      t2.start(); // WritingThread Start
-
+      make();
     } catch (IOException e) {
       e.printStackTrace();
     }

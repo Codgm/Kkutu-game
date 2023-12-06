@@ -25,4 +25,7 @@ public class Names {
     return names;
   }
 
+  public void reset() {
+    instance = null;
+  }
 }

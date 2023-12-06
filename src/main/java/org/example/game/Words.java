@@ -89,4 +89,7 @@ public class Words {
     this.PersonalTime = PersonalTime;
   }
 
+  public void reset() {
+    instance = null;
+  }
 }

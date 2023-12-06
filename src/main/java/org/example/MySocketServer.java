@@ -20,6 +20,7 @@ import org.example.game.TimerEvent;
 import org.example.game.Words;
 
 public class MySocketServer extends Thread {
+  private static TimerEvent timerEvent;
 
   private static final ArrayList<Socket> list = new ArrayList<>();
   private final ClientQueue queue = ClientQueue.getInstance();
@@ -36,6 +37,15 @@ public class MySocketServer extends Thread {
     list.add(socket);
   }
 
+  private synchronized static void reset() {
+    for(Socket element : list) {
+      try {
+        element.close();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+  }
   public static void main(String[] args) {
     try {
       int socketPort = 1234;
@@ -148,13 +158,33 @@ public class MySocketServer extends Thread {
           PrintWriter printWriter3 = new PrintWriter(outputStreamWriter3, true);
           printWriter3.println("turn : " + queue.getCurrentClientName());
         }
+        if(readValue.equals("Reset")) {
+          Game game = Game.getInstance();
+          for (Socket value : list) {
+            OutputStream outputStream2 = value.getOutputStream();
+            // Use OutputStreamWriter to send UTF-8 encoded string
+            OutputStreamWriter outputStreamWriter2 = new OutputStreamWriter(outputStream2,
+                StandardCharsets.UTF_8);
+            PrintWriter printWriter2 = new PrintWriter(outputStreamWriter2, true);
+            printWriter2.println("Reset");
+          }
+          game.reset();
+          queue.reset();
+          wordSetting.reset();
+          timerEvent.cancel();
+          timerEvent=null;
+          timer.cancel();
+          timer=null;
+          names.reset();
+        }
         //처음 세팅이 아닐때,
-        if (readValue.equals("Start") && name.equals(queue.getCurrentClientName())
+        else if (readValue.equals("Start") && name.equals(queue.getCurrentClientName())
             && wordSetting.getRoundFlag()) {
           Game game = Game.getInstance();
           timer = new Timer();
           wordSetting.setRoundTime(wordSetting.getInitialRoundTime());
-          TimerEvent timerEvent = new TimerEvent(wordSetting.getRoundTime(), false, list);
+          timerEvent.cancel();
+          timerEvent = new TimerEvent(wordSetting.getInitialRoundTime(), false, list);
           for (Socket value : list) {
             OutputStream outputStream2 = value.getOutputStream();
             // Use OutputStreamWriter to send UTF-8 encoded string
@@ -192,7 +222,7 @@ public class MySocketServer extends Thread {
           int roundTime = Integer.parseInt(bufferedReader.readLine());
           wordSetting.setRoundTime(roundTime);
           wordSetting.setInitialRoundTime(roundTime);
-          TimerEvent timerEvent = new TimerEvent(roundTime, false, list);
+          timerEvent = new TimerEvent(roundTime, false, list);
           printWriter2.println("Write a Round");
           String round = bufferedReader.readLine();
           wordSetting.setFinalRound(Integer.parseInt(round));

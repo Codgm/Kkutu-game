@@ -102,6 +102,10 @@ public class ListeningThread extends Thread {
           } else {
             throw new IllegalArgumentException("Wrong format");
           }
+        } else if (tmp.equals("Reset")) {
+          Thread.sleep(1000);
+          frame.reset();
+          MySocketClient.make();
         }
 				/*
 				else if(tmp.contains("Game Started")) {

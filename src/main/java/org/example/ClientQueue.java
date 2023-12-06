@@ -65,4 +65,8 @@ public class ClientQueue {
   public String getCurrentClientName() {
     return currentClientName;
   }
+
+  public void reset() {
+    instance= null;
+  }
 }

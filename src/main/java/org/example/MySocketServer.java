@@ -21,7 +21,7 @@ import org.example.game.Words;
 
 public class MySocketServer extends Thread {
 
-  private static final ArrayList<Socket> list = new ArrayList<Socket>();
+  private static final ArrayList<Socket> list = new ArrayList<>();
   private final ClientQueue queue = ClientQueue.getInstance();
 
   private final Words wordSetting = Words.getInstance();

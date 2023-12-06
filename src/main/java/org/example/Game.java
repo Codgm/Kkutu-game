@@ -54,16 +54,8 @@ public class Game {
     return instance;
   }
 
-  public boolean getMission() {
-    return mission;
-  }
-
   public void setMission(boolean mission) {
     this.mission = mission;
-  }
-
-  public synchronized String getCurrentWord() {
-    return this.currentWord;
   }
 
   public synchronized void setCurrentWord(String currentWord) {
@@ -173,14 +165,6 @@ public class Game {
     this.injeong = injeong;
   }
 
-  public synchronized boolean getManner() {
-    return this.manner;
-  }
-
-  public synchronized void setManner(boolean manner) {
-    this.manner = manner;
-  }
-
   public synchronized String getLanguage() {
     return this.language;
   }
@@ -199,14 +183,6 @@ public class Game {
 
   public synchronized void setChain(int chain) {
     this.chain = chain;
-  }
-
-  public synchronized int getTime() {
-    return this.time;
-  }
-
-  public synchronized void setTime(int time) {
-    this.time = time;
   }
 
 }

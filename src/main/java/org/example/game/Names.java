@@ -21,16 +21,8 @@ public class Names {
     names.add(name);
   }
 
-  public synchronized void remove(String name) {
-    names.remove(name);
-  }
-
   public synchronized ArrayList<String> getNames() {
     return names;
-  }
-
-  public synchronized void clear() {
-    names.clear();
   }
 
 }

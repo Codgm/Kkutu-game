@@ -9,7 +9,6 @@ import java.util.Scanner;
 
 public class WritingThread extends Thread {
 
-  private final Scanner scanner = new Scanner(System.in);
   private Socket socket = null;
   private IOFrame frame = null;
 

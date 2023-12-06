@@ -45,22 +45,6 @@ public class Words {
     this.isTimeOver = flag;
   }//for Debugging
 
-  public synchronized String getCurrentWord() {
-    return this.currentWord;
-  }
-
-  public synchronized void setCurrentWord(String currentWord) {
-    this.currentWord = currentWord;
-  }
-
-  public synchronized char getLastChar() {
-    return this.lastChar;
-  }
-
-  public synchronized void setLastChar(char lastChar) {
-    this.lastChar = lastChar;
-  }
-
   public synchronized boolean getRoundFlag() {
     return this.roundFlag;
   }
@@ -69,52 +53,12 @@ public class Words {
     this.roundFlag = roundFlag;
   }
 
-  public synchronized String getStartWord() {
-    return this.startWord;
-  }
-
-  public synchronized void setStartWord(String startWord) {
-    this.startWord = startWord;
-  }
-
-  public synchronized boolean getIsStart() {
-    return this.isStart;
-  }
-
-  public synchronized void setIsStart(boolean isStart) {
-    this.isStart = isStart;
-  }
-
-  public synchronized int getRound() {
-    return this.round;
-  }
-
-  public synchronized void setRound(int round) {
-    this.round = round;
-  }
-
   public synchronized int getFinalRound() {
     return this.finalRound;
   }
 
   public synchronized void setFinalRound(int finalRound) {
     this.finalRound = finalRound;
-  }
-
-  public synchronized int getGameFlag() {
-    return this.gameFlag;
-  }
-
-  public synchronized void setGameFlag(int gameFlag) {
-    this.gameFlag = gameFlag;
-  }
-
-  public synchronized int getGameFlag2() {
-    return this.gameFlag2;
-  }
-
-  public synchronized void setGameFlag2(int gameFlag2) {
-    this.gameFlag2 = gameFlag2;
   }
 
   public synchronized boolean getIsEnd() {
@@ -141,20 +85,8 @@ public class Words {
     this.initialRoundTime = initialRoundTime;
   }
 
-  public synchronized int getPersonalTime() {
-    return this.PersonalTime;
-  }
-
   public synchronized void setPersonalTime(int PersonalTime) {
     this.PersonalTime = PersonalTime;
-  }
-
-  public synchronized int getInitialPersonalTime() {
-    return this.initialPersonalTime;
-  }
-
-  public synchronized void setInitialPersonalTime(int initialPersonalTime) {
-    this.initialPersonalTime = initialPersonalTime;
   }
 
 }

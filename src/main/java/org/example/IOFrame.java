@@ -146,13 +146,6 @@ public class IOFrame extends JFrame {
     setVisible(true);
   }
 
-  void reRenderIOFrame() {
-    //inputTextField manage states itself
-    recordTextArea.setText(recordData);
-    turnLabel.setText(turnState[turnStateValue]);
-    personalTimeLabel.setText("personal: " + personalLeftTime + "sec left");
-  }
-
   boolean getIsRoundEnd() {
     return this.isRoundEnd;
   }
@@ -192,10 +185,6 @@ public class IOFrame extends JFrame {
     this.userName = title;
   }
 
-  boolean isInputTextValid() {
-    return isInputTextValid;
-  }
-
   String getInputText() {
     int debugCount = 0;
     while (!isInputTextValid) {
@@ -212,16 +201,8 @@ public class IOFrame extends JFrame {
     return this.userName;
   }
 
-  public String getLastTurn() {
-    return this.lastTurn;
-  }
-
   public void setLastTurn(String lastTurn) {
     this.lastTurn = lastTurn;
-  }
-
-  public boolean getIsBeforeFirstRound() {
-    return this.isBeforeFirstRound;
   }
 
   public void setIsBeforeFirstRound(boolean isBeforeFirstRound) {

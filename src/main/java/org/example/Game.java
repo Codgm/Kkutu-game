@@ -130,8 +130,7 @@ public class Game {
     roundScore.replace(name, roundScore.get(name) + tmp);
   }
 
-  public ArrayList<String> getMean(String word, String lang)
-      throws ParserConfigurationException, IOException, SAXException {
+  public ArrayList<String> getMean(String word, String lang) {
     ArrayList<String> means = new ArrayList<>();
     //어인정 판단. 어인정은 뜻이 없음.
     if (db.selectType(word, lang).contains("INJEONG")) {

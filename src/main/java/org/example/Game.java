@@ -33,10 +33,10 @@ public class Game {
   private String startWord;
 
   private boolean injeong = false;
-  private boolean manner = false;
+  private final boolean manner = false;
   private boolean mission = false;
   private String language;
-  private int time = 0; //친 시간을 기억해놓고 점수계산하는데에 사용하기 위해서.
+  private final int time = 0; //친 시간을 기억해놓고 점수계산하는데에 사용하기 위해서.
   private int chain = 0; //chain까지 정해놔야 점수계산할때 사용할 수 있네?
 
   private Game() {

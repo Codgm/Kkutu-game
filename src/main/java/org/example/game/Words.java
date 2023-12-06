@@ -3,16 +3,16 @@ package org.example.game;
 public class Words {
 
   private static Words instance = null;
-  private String currentWord = null;
-  private char lastChar = ' ';
+  private final String currentWord = null;
+  private final char lastChar = ' ';
 
   private boolean roundFlag = true;
 
-  private String startWord = null;
+  private final String startWord = null;
 
-  private boolean isStart = false;
+  private final boolean isStart = false;
 
-  private int round = 0;
+  private final int round = 0;
 
   private int finalRound = 0;
   private int gameFlag;

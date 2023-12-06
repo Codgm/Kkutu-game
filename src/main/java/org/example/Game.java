@@ -23,7 +23,6 @@ public class Game {
   private final ClientQueue queue = ClientQueue.getInstance();
   private final Names names = Names.getInstance();
   private final Map<String, Integer> roundScore = new HashMap<>(); //라운드별 점수 기록용
-  private String currentWord = null;
   private char lastChar = ' ';
   private int round;
 
@@ -56,7 +55,6 @@ public class Game {
   }
 
   public synchronized void setCurrentWord(String currentWord) {
-    this.currentWord = currentWord;
   }
 
   public synchronized char getLastChar() {

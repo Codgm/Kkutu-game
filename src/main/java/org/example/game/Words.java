@@ -24,7 +24,6 @@ public class Words {
   private int roundTime;
   private int initialRoundTime;
 
-  private int PersonalTime;
   private int initialPersonalTime;
 
   private Words() {
@@ -86,7 +85,6 @@ public class Words {
   }
 
   public synchronized void setPersonalTime(int PersonalTime) {
-    this.PersonalTime = PersonalTime;
   }
 
   public void reset() {

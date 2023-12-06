@@ -29,8 +29,6 @@ public class MySocketServer extends Thread {
   private final DataBase db = new DataBase("jdbc:postgresql://localhost:5432/kkutudb", "postgres",
       Passwd.getPasswd());
   private Socket socket = null;
-  private ArrayList<String> words = new ArrayList<String>();
-  private String startWord = null;
 
 
   public MySocketServer(Socket socket) {
@@ -200,9 +198,9 @@ public class MySocketServer extends Thread {
           wordSetting.setFinalRound(Integer.parseInt(round));
           wordSetting.setRoundFlag(true);
           Random random = new Random();
-          words = db.selectWords(wordSetting.getFinalRound(), game.getLanguage(),
+          ArrayList<String> words = db.selectWords(wordSetting.getFinalRound(), game.getLanguage(),
               game.getInjeong());
-          startWord = words.get(random.nextInt(words.size()));
+          String startWord = words.get(random.nextInt(words.size()));
           game.setStartWord(startWord);
           game.setCurrentWord(startWord);
           game.setRound(1);

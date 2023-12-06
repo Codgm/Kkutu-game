@@ -150,10 +150,6 @@ public class Game {
     this.startWord = startWord;
   }
 
-  public synchronized boolean getInjeong() {
-    return this.injeong;
-  }
-
   public synchronized void setInjeong(boolean injeong) {
     this.injeong = injeong;
   }

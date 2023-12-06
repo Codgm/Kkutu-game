@@ -18,7 +18,6 @@ public class MySocketClient {
     PrintWriter writer = new PrintWriter(out, true);
     BufferedReader reader = new BufferedReader(
         new java.io.InputStreamReader(socket.getInputStream()));
-    CurrentClient currentClient = new CurrentClient();
     String message;
     String name = null;
     while ((message = reader.readLine()) != null) {

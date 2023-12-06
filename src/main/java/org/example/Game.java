@@ -2,17 +2,14 @@ package org.example;
 
 import static java.lang.Math.pow;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import javax.xml.parsers.ParserConfigurationException;
 import org.example.game.MeanApi;
 import org.example.game.Names;
 import org.example.game.Passwd;
 import org.example.game.Words;
-import org.xml.sax.SAXException;
 
 public class Game {
 

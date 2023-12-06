@@ -19,7 +19,7 @@ public class Words {
 
   private boolean isEnd = false;
   private int gameFlag2;
-  private boolean isTimeOver=false;
+  private boolean isTimeOver = false;
 
   private int roundTime;
   private int initialRoundTime;
@@ -27,8 +27,8 @@ public class Words {
   private int PersonalTime;
   private int initialPersonalTime;
 
-  public synchronized boolean getIsTimeOver(){return isTimeOver;}//for Debugging
-  public synchronized void setIsTimeOver(boolean flag){this.isTimeOver=flag;}//for Debugging
+  private Words() {
+  }
 
   public static synchronized Words getInstance() {
     if (instance == null) {
@@ -37,9 +37,13 @@ public class Words {
     return instance;
   }
 
+  public synchronized boolean getIsTimeOver() {
+    return isTimeOver;
+  }//for Debugging
 
-  private Words() {
-  }
+  public synchronized void setIsTimeOver(boolean flag) {
+    this.isTimeOver = flag;
+  }//for Debugging
 
   public synchronized String getCurrentWord() {
     return this.currentWord;

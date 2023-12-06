@@ -1,13 +1,10 @@
 package org.example;
 
-import java.awt.Font;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.nio.Buffer;
 import java.util.Scanner;
 
 public class MySocketClient {
@@ -30,7 +27,7 @@ public class MySocketClient {
       String name = null;
       while ((message = reader.readLine()) != null) {
         //System.out.println(message);
-        frame.pushRecordData(message+"\n");
+        frame.pushRecordData(message + "\n");
         if (message.equals("Enter The ID")) {
           name = frame.getInputText();
           frame.setFrameTitle(name);
@@ -50,4 +47,3 @@ public class MySocketClient {
   }
 
 }
-

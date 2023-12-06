@@ -16,18 +16,16 @@ import org.xml.sax.SAXException;
 
 public class Game {
 
-  private final ClientQueue clientQueue = ClientQueue.getInstance();
+  private static final Map<String, Integer> score = new HashMap<>(); //점수 기록용
   private static Game instance = null;
-
+  private final ClientQueue clientQueue = ClientQueue.getInstance();
   private final Words wordSetting = Words.getInstance();
-  private static Map<String, Integer> score = new HashMap<>(); //점수 기록용
-
-  private Map<String, Integer> roundScore = new HashMap<>(); //라운드별 점수 기록용
   private final ArrayList<String> words = new ArrayList<>();
   private final DataBase db = new DataBase("jdbc:postgresql://localhost:5432/kkutudb", "postgres",
       Passwd.getPasswd());
   private final ClientQueue queue = ClientQueue.getInstance();
   private final Names names = Names.getInstance();
+  private final Map<String, Integer> roundScore = new HashMap<>(); //라운드별 점수 기록용
   private String currentWord = null;
   private char lastChar = ' ';
   private int round;
@@ -116,8 +114,8 @@ public class Game {
     setRound(getRound() + 1);
     setLastChar(startWord.charAt(getRound() - 1));
     setCurrentWord(null);
-    for(String name : names.getNames()){
-      roundScore.replace(name,0);
+    for (String name : names.getNames()) {
+      roundScore.replace(name, 0);
     }
     chain = 0;
     words.clear();
@@ -125,7 +123,9 @@ public class Game {
 
 
   public synchronized void updateScore(String name, int length) {
-    int tmp = (int) (2*(pow((5 + 7*length), 0.74) + 0.88 * chain)*(1 - clientQueue.getTimerEvent().getRemainTime()/wordSetting.getRoundTime()) * (1 + 0.5 * (mission ? 1 : 0)));
+    int tmp = (int) (2 * (pow((5 + 7 * length), 0.74) + 0.88 * chain) * (1
+        - clientQueue.getTimerEvent().getRemainTime() / wordSetting.getRoundTime()) * (1 + 0.5 * (
+        mission ? 1 : 0)));
     score.replace(name, score.get(name) + tmp);
     roundScore.replace(name, roundScore.get(name) + tmp);
   }
@@ -134,17 +134,16 @@ public class Game {
       throws ParserConfigurationException, IOException, SAXException {
     ArrayList<String> means = new ArrayList<>();
     //어인정 판단. 어인정은 뜻이 없음.
-    if(db.selectType(word, lang).contains("INJEONG")) {
+    if (db.selectType(word, lang).contains("INJEONG")) {
       means.add("어인정은 뜻이 없습니다");
       return means;
     }
-    if(lang.equals("en")) {
+    if (lang.equals("en")) {
       String mean = db.getMeanByWord(word, "en");
       //;기준으로 분리
       String[] meanList = mean.split(";");
       means.addAll(Arrays.asList(meanList));
-    }
-    else {
+    } else {
       means = MeanApi.getMeans(word);
     }
     return means;

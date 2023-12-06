@@ -87,7 +87,7 @@ public class MySocketServer extends Thread {
         OutputStreamWriter outputStreamWriter2 = new OutputStreamWriter(outputStream2,
             StandardCharsets.UTF_8);
         PrintWriter printWriter2 = new PrintWriter(outputStreamWriter2, true);
-        for(int j=0;j<names.getNames().size();j++){//IOFrame이 저장하는 client 정보는 Map이라 중복 삭제해줌
+        for (int j = 0; j < names.getNames().size(); j++) {//IOFrame이 저장하는 client 정보는 Map이라 중복 삭제해줌
           printWriter2.println("New Client " + names.getNames().get(j));
         }
       }
@@ -156,7 +156,7 @@ public class MySocketServer extends Thread {
           Game game = Game.getInstance();
           timer = new Timer();
           wordSetting.setRoundTime(wordSetting.getInitialRoundTime());
-          TimerEvent timerEvent = new TimerEvent(wordSetting.getRoundTime(), false,list);
+          TimerEvent timerEvent = new TimerEvent(wordSetting.getRoundTime(), false, list);
           for (int i = 0; i < list.size(); i++) {
             OutputStream outputStream2 = list.get(i).getOutputStream();
             // Use OutputStreamWriter to send UTF-8 encoded string
@@ -194,7 +194,7 @@ public class MySocketServer extends Thread {
           int roundTime = Integer.parseInt(bufferedReader.readLine());
           wordSetting.setRoundTime(roundTime);
           wordSetting.setInitialRoundTime(roundTime);
-          TimerEvent timerEvent = new TimerEvent(roundTime, false,list);
+          TimerEvent timerEvent = new TimerEvent(roundTime, false, list);
           printWriter2.println("Write a Round");
           String round = bufferedReader.readLine();
           wordSetting.setFinalRound(Integer.parseInt(round));
@@ -249,12 +249,14 @@ public class MySocketServer extends Thread {
                   StandardCharsets.UTF_8);
               PrintWriter writer2 = new PrintWriter(outputStreamWriter2, true);
               writer2.println("Correct Word : " + readValue);
-              if (game.getLanguage().equals("ko")&&readValue.contains(mission.getMissionWord())) {
+              if (game.getLanguage().equals("ko") && readValue.contains(mission.getMissionWord())) {
                 game.setMission(true);
                 writer2.println("Mission accomplished! You will get a bonus point.");
               }
-              System.out.println("Score: " + game.getScore(name)+" Name: "+name);//Maybe here is error
-              writer2.println("Score: " + game.getScore(name)+" Name: "+name);//Maybe here is error
+              System.out.println(
+                  "Score: " + game.getScore(name) + " Name: " + name);//Maybe here is error
+              writer2.println(
+                  "Score: " + game.getScore(name) + " Name: " + name);//Maybe here is error
               game.setMission(false);
               writer2.println("Mean :");
               for (String mean : game.getMean(readValue, game.getLanguage())) {

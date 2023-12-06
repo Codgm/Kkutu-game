@@ -42,9 +42,8 @@ public class MeanApi {
 
   public static String getValue(String tag, Element element) {
     NodeList nl = element.getElementsByTagName(tag).item(0).getChildNodes();
-    Node value = (Node) nl.item(0);
+    Node value = nl.item(0);
     return value.getNodeValue();
   }
 
 }
-

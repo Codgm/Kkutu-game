@@ -13,11 +13,10 @@ import java.util.regex.Pattern;
 
 public class ListeningThread extends Thread {
 
+  private final CurrentClient currentClient;
+  private final String name;
   private Socket socket = null;
-  private CurrentClient currentClient;
   private IOFrame frame = null;
-
-  private String name;
 
   public ListeningThread(Socket socket, CurrentClient currentClient, String name, IOFrame frame) {
     this.socket = socket;
@@ -47,7 +46,7 @@ public class ListeningThread extends Thread {
           }
         } else if (tmp.contains("turn : ")) {
           System.out.println("Client-listening:" + tmp.substring(7));
-          System.out.println("frame name:"+frame.getUserName());
+          System.out.println("frame name:" + frame.getUserName());
           if (tmp.substring(7).equals(frame.getUserName())) {
             frame.setTurnStateValue(1);
             frame.setLastTurn(tmp.substring(7));
@@ -93,12 +92,10 @@ public class ListeningThread extends Thread {
           if (!(frame.getIsRoundEnd())) {
             frame.setRoundLeftTime(Integer.parseInt(tmp.substring(13)));
           }
-        }
-        else if(tmp.contains("New Client ")){
-          String newClient =tmp.substring(11);
+        } else if (tmp.contains("New Client ")) {
+          String newClient = tmp.substring(11);
           frame.addClientList(newClient);
-        }
-        else if(tmp.contains("Score: ")){//format: "Score: ${score} Name: ${name}"
+        } else if (tmp.contains("Score: ")) {//format: "Score: ${score} Name: ${name}"
           String regex = "Score: (\\d+) Name: (.+)";
           Pattern pattern = Pattern.compile(regex);
           Matcher matcher = pattern.matcher(tmp);
@@ -121,7 +118,7 @@ public class ListeningThread extends Thread {
         else {
           System.out.println(tmp);//for Debugging
           frame.pushRecordData(tmp + "\n");
-          if(tmp.contains("Current Round : ")){//첫 번째 라운드 시작 이후로 계속 false
+          if (tmp.contains("Current Round : ")) {//첫 번째 라운드 시작 이후로 계속 false
             frame.setIsBeforeFirstRound(false);
             frame.clearRecordDate();
             frame.setIsRoundEnd(false);

@@ -12,9 +12,9 @@ import java.util.TimerTask;
 public class TimerEvent extends TimerTask {
 
   private final int time;
-  private int curTime = 0;
   private final boolean isPersonalTimer;
   private final Words words = Words.getInstance();
+  private int curTime = 0;
   private ArrayList<Socket> list = null;
 
   public TimerEvent(int time, boolean isPersonalTimer, ArrayList<Socket> list) {
@@ -55,7 +55,7 @@ public class TimerEvent extends TimerTask {
   }
 
   public int getRemainTime() {
-    return time-curTime;
+    return time - curTime;
   }
 
   private void sendLeftTime(ArrayList<Socket> list, boolean isPersonalTimer) throws IOException {

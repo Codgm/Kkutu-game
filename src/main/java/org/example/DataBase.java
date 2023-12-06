@@ -3,9 +3,8 @@ package org.example;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class DataBase {
@@ -48,11 +47,7 @@ public class DataBase {
       } else {
         if (resultSet.next()) {
           String type = resultSet.getString("type");
-          if (type.contains("INJEONG")) {
-            return false;
-          } else {
-            return true;
-          }
+          return !type.contains("INJEONG");
         } else {
           return false;
         }

@@ -1,9 +1,7 @@
 package org.example;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.GridLayout;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
@@ -12,9 +10,9 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -24,43 +22,37 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.DefaultCaret;
-import javax.swing.BoxLayout;
 
 public class IOFrame extends JFrame {
 
-  private boolean isBeforeFirstRound = true;//처음 한 번만 true고 그 이후로는 항상 false
-  private String lastTurn = null;//마지막으로 누구의 턴이었는지, 라운드 종료됀 상태에서 필요함
-  private String userName = null;
-  private Socket socket = null;
-  Font font = new Font("Malgun Gothic", Font.PLAIN, 10);
-  private boolean isRoundEnd = false;
-  private int personalLeftTime = 0;
-  private int roundLeftTime = 0;
-  private int turnStateValue = 0;
-  private String recordData = "";
-  private String[] turnState = {
-      " | Waiting...", " | Your turn", " | Opponent turn"
-  };
-  volatile private boolean isInputTextValid = false;
-  private String inputText = "";
-
+  final JLabel inputLabel = new JLabel("input>> ");
   private final Map<String, Integer> clientScore = new HashMap<>();
-
+  private final String[] turnState = {" | Waiting...", " | Your turn", " | Opponent turn"};
+  Font font = new Font("Malgun Gothic", Font.PLAIN, 10);
   JPanel mainPage = new JPanel();
   JPanel gamePage = new JPanel();
   JPanel scorePage = new JPanel();
   JPanel inputLayout = new JPanel();
   JPanel stateLayout = new JPanel();
   JPanel eachClientScore = new JPanel();
-
   JTextArea recordTextArea = new JTextArea();
   JScrollPane scrollRecord = new JScrollPane(recordTextArea);
-  final JLabel inputLabel = new JLabel("input>> ");
   JTextField inputTextField = new JTextField();
-  JLabel turnLabel = new JLabel(turnState[turnStateValue]);
-  JLabel personalTimeLabel = new JLabel("personal: " + personalLeftTime + "sec left");
-  JLabel roundTimeLabel = new JLabel(" | round: " + roundLeftTime + "sec left");
   JLabel scoreLabel = new JLabel("    Score    ");
+  private boolean isBeforeFirstRound = true;//처음 한 번만 true고 그 이후로는 항상 false
+  private String lastTurn = null;//마지막으로 누구의 턴이었는지, 라운드 종료됀 상태에서 필요함
+  private String userName = null;
+  private Socket socket = null;
+  private boolean isRoundEnd = false;
+  private int personalLeftTime = 0;
+  JLabel personalTimeLabel = new JLabel("personal: " + personalLeftTime + "sec left");
+  private int roundLeftTime = 0;
+  JLabel roundTimeLabel = new JLabel(" | round: " + roundLeftTime + "sec left");
+  private int turnStateValue = 0;
+  JLabel turnLabel = new JLabel(turnState[turnStateValue]);
+  private String recordData = "";
+  volatile private boolean isInputTextValid = false;
+  private String inputText = "";
 
   public IOFrame(String userName) {
     recordTextArea.setFont(font);
@@ -161,12 +153,12 @@ public class IOFrame extends JFrame {
     personalTimeLabel.setText("personal: " + personalLeftTime + "sec left");
   }
 
-  void setIsRoundEnd(boolean isRoundEnd) {
-    this.isRoundEnd = isRoundEnd;
-  }
-
   boolean getIsRoundEnd() {
     return this.isRoundEnd;
+  }
+
+  void setIsRoundEnd(boolean isRoundEnd) {
+    this.isRoundEnd = isRoundEnd;
   }
 
   void setPersonalLeftTime(int personalLeftTime) {
@@ -220,31 +212,32 @@ public class IOFrame extends JFrame {
     return this.userName;
   }
 
-  public void setLastTurn(String lastTurn) {
-    this.lastTurn = lastTurn;
-  }
-
   public String getLastTurn() {
     return this.lastTurn;
   }
 
-  public void setIsBeforeFirstRound(boolean isBeforeFirstRound) {
-    this.isBeforeFirstRound = isBeforeFirstRound;
+  public void setLastTurn(String lastTurn) {
+    this.lastTurn = lastTurn;
   }
 
   public boolean getIsBeforeFirstRound() {
     return this.isBeforeFirstRound;
   }
 
+  public void setIsBeforeFirstRound(boolean isBeforeFirstRound) {
+    this.isBeforeFirstRound = isBeforeFirstRound;
+  }
+
   public void addClientList(String name) {
     clientScore.put(name, 0);
-    updateScore(name,0);
+    updateScore(name, 0);
   }
+
   public void updateScore(String newName, int newScore) {
     eachClientScore.removeAll();
     eachClientScore.setLayout(new BoxLayout(eachClientScore, BoxLayout.Y_AXIS));
     for (String name : clientScore.keySet()) {
-      if(name.equals(newName)){
+      if (name.equals(newName)) {
         clientScore.put(name, newScore);
       }
       JLabel label = new JLabel(name + ": " + clientScore.get(name));

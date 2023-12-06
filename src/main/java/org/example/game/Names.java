@@ -1,13 +1,14 @@
 package org.example.game;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import org.example.IOFrame;
 
 public class Names {
 
-  ArrayList<String> names = new ArrayList<>();
   private static Names instance = null;
+  ArrayList<String> names = new ArrayList<>();
+
+  private Names() {
+  }
 
   public static Names getInstance() {
     if (instance == null) {
@@ -15,8 +16,6 @@ public class Names {
     }
     return instance;
   }
-
-  private Names() {}
 
   public synchronized void add(String name) {
     names.add(name);

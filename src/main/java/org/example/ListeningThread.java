@@ -59,8 +59,6 @@ public class ListeningThread extends Thread {
           frame.pushRecordData("Wrong Word\n");
           writer.println("Wrong Word");
         } else if (tmp.equals("Start")) {
-          //frame.setIsRoundEnd(false);
-          //frame.pushRecordData("listener hear-Start\n");
           writer.println("Start");
         } else if (tmp.equals("Server Ok")) {
           writer.println("Client Ok");

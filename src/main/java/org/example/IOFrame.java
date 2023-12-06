@@ -190,7 +190,6 @@ public class IOFrame extends JFrame {
   }
 
   String getInputText() {
-    int debugCount = 0;
     while (!isInputTextValid) {
       Thread.onSpinWait();
     }

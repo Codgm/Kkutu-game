@@ -12,7 +12,7 @@ public class WritingThread extends Thread {
   private final IOFrame frame;
 
 
-  public WritingThread(Socket socket, CurrentClient currentClient, IOFrame frame) {
+  public WritingThread(Socket socket, IOFrame frame) {
     this.socket = socket;
     this.frame = frame;
   }

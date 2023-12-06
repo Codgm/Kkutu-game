@@ -73,7 +73,7 @@ public class DataBase {
   }
 
 
-  public ArrayList<String> selectWords(int round, String lang, boolean injeong) {
+  public ArrayList<String> selectWords(int round, String lang) {
     //우선 en으로 설정. 추후 Parameter로 받아서 언어 설정할 수 있게 변경.
     String query = "SELECT _id FROM public.kkutu_" + lang + " WHERE CHAR_LENGTH(_id) = " + round;
     ArrayList<String> words = new ArrayList<>();

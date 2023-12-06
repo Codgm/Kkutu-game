@@ -75,7 +75,6 @@ public class MySocketServer extends Thread {
 
       String readValue;
       String name;
-      boolean identify = false;
 
       readValue = bufferedReader.readLine();
       name = readValue;
@@ -218,11 +217,11 @@ public class MySocketServer extends Thread {
           wordSetting.setFinalRound(Integer.parseInt(round));
           wordSetting.setRoundFlag(true);
           Random random = new Random();
-          ArrayList<String> words = db.selectWords(wordSetting.getFinalRound(), game.getLanguage(),
-              game.getInjeong());
+          ArrayList<String> words = db.selectWords(wordSetting.getFinalRound(), game.getLanguage()
+          );
           String startWord = words.get(random.nextInt(words.size()));
           game.setStartWord(startWord);
-          game.setCurrentWord(startWord);
+          game.setCurrentWord();
           game.setRound(1);
           game.setLastChar(startWord.charAt(0));
           queue.addTimer(list);

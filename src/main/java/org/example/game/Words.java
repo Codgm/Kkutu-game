@@ -72,7 +72,7 @@ public class Words {
     this.initialRoundTime = initialRoundTime;
   }
 
-  public synchronized void setPersonalTime(int PersonalTime) {
+  public synchronized void setPersonalTime() {
   }
 
   public void reset() {

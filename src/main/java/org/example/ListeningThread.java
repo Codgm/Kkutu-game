@@ -17,7 +17,7 @@ public class ListeningThread extends Thread {
   private final Socket socket;
   private final IOFrame frame;
 
-  public ListeningThread(Socket socket, CurrentClient currentClient, String name, IOFrame frame) {
+  public ListeningThread(Socket socket, String name, IOFrame frame) {
     this.socket = socket;
     this.name = name;
     this.frame = frame;

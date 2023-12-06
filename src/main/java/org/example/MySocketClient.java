@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Scanner;
 
 public class MySocketClient {
 
@@ -19,7 +18,6 @@ public class MySocketClient {
     PrintWriter writer = new PrintWriter(out, true);
     BufferedReader reader = new BufferedReader(
         new java.io.InputStreamReader(socket.getInputStream()));
-    Scanner scanner = new Scanner(System.in);
     CurrentClient currentClient = new CurrentClient();
     String message;
     String name = null;
@@ -34,8 +32,8 @@ public class MySocketClient {
       }
     }
 
-    ListeningThread t1 = new ListeningThread(socket, currentClient, name, frame);
-    WritingThread t2 = new WritingThread(socket, currentClient, frame);
+    ListeningThread t1 = new ListeningThread(socket, name, frame);
+    WritingThread t2 = new WritingThread(socket, frame);
     t1.start();
     t2.start(); // WritingThread Start
   }

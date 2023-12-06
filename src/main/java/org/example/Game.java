@@ -52,7 +52,7 @@ public class Game {
     this.mission = mission;
   }
 
-  public synchronized void setCurrentWord(String currentWord) {
+  public synchronized void setCurrentWord() {
   }
 
   public synchronized char getLastChar() {
@@ -72,7 +72,7 @@ public class Game {
       if (tmp.charAt(0) == getLastChar() && db.select(tmp, getLanguage(), true) && !words.contains(
           tmp)) {
         words.add(tmp);
-        setCurrentWord(tmp);
+        setCurrentWord();
         setLastChar(tmp.charAt(tmp.length() - 1));
         queue.getNextClient();
         return true;
@@ -83,7 +83,7 @@ public class Game {
     if (tmp.charAt(0) == getLastChar() && db.select(tmp, getLanguage(), false) && !words.contains(
         tmp)) {
       words.add(tmp);
-      setCurrentWord(tmp);
+      setCurrentWord();
       setLastChar(tmp.charAt(tmp.length() - 1));
       queue.getNextClient();
       return true;
@@ -98,7 +98,7 @@ public class Game {
     score.replace(loser, score.get(loser) - roundScore.get(loser));
     setRound(getRound() + 1);
     setLastChar(startWord.charAt(getRound() - 1));
-    setCurrentWord(null);
+    setCurrentWord();
     for (String name : names.getNames()) {
       roundScore.replace(name, 0);
     }

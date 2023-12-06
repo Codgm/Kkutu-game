@@ -41,7 +41,7 @@ public class TimerEvent extends TimerTask {
       if (!isPersonalTimer) {
         words.setRoundTime(curTime);
       } else {
-        words.setPersonalTime(curTime);
+        words.setPersonalTime();
         System.out.println(curTime + "sec left");
 
 

@@ -29,7 +29,7 @@ public class MySocketServer extends Thread {
   private final Names names = Names.getInstance();
   private final DataBase db = new DataBase(
       Passwd.getPasswd());
-  private Socket socket;
+  private final Socket socket;
 
 
   public MySocketServer(Socket socket) {

@@ -8,8 +8,8 @@ import java.nio.charset.StandardCharsets;
 
 public class WritingThread extends Thread {
 
-  private Socket socket;
-  private IOFrame frame;
+  private final Socket socket;
+  private final IOFrame frame;
 
 
   public WritingThread(Socket socket, CurrentClient currentClient, IOFrame frame) {

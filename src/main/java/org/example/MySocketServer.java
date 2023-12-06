@@ -26,7 +26,7 @@ public class MySocketServer extends Thread {
 
   private final Words wordSetting = Words.getInstance();
   private final Names names = Names.getInstance();
-  private final DataBase db = new DataBase("jdbc:postgresql://localhost:5432/kkutudb", "postgres",
+  private final DataBase db = new DataBase(
       Passwd.getPasswd());
   private Socket socket = null;
 

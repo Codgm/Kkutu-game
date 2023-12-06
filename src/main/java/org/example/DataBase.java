@@ -15,9 +15,9 @@ public class DataBase {
 
   private Connection connection;
 
-  DataBase(String url, String id, String password) {
-    this.url = url;
-    this.id = id;
+  DataBase(String password) {
+    this.url = "jdbc:postgresql://localhost:5432/kkutudb";
+    this.id = "postgres";
     this.password = password;
   }
 

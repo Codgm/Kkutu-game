@@ -21,7 +21,7 @@ public class Game {
   private final ClientQueue clientQueue = ClientQueue.getInstance();
   private final Words wordSetting = Words.getInstance();
   private final ArrayList<String> words = new ArrayList<>();
-  private final DataBase db = new DataBase("jdbc:postgresql://localhost:5432/kkutudb", "postgres",
+  private final DataBase db = new DataBase(
       Passwd.getPasswd());
   private final ClientQueue queue = ClientQueue.getInstance();
   private final Names names = Names.getInstance();

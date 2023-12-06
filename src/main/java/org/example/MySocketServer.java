@@ -37,15 +37,6 @@ public class MySocketServer extends Thread {
     list.add(socket);
   }
 
-  private synchronized static void reset() {
-    for(Socket element : list) {
-      try {
-        element.close();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-    }
-  }
   public static void main(String[] args) {
     try {
       int socketPort = 1234;

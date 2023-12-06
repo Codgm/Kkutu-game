@@ -174,7 +174,6 @@ public class MySocketServer extends Thread {
           timerEvent.cancel();
           timerEvent=null;
           timer.cancel();
-          timer=null;
           names.reset();
         }
         //처음 세팅이 아닐때,

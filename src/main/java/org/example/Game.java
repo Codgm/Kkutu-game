@@ -180,5 +180,6 @@ public class Game {
     this.chain = chain;
   }
 
-  public void reset() {this.instance = null;}
+  public void reset() {
+    instance = null;}
 }

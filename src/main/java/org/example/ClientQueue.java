@@ -56,7 +56,9 @@ public class ClientQueue {
 
   public synchronized void pollTimerEvent(ArrayList<Socket> list) {
     personalTimerEvent.add(new TimerEvent(TimeSet.timeSet(words.getRoundTime()), true, list));
-    personalTimerEvent.peek().cancel();
+    if (personalTimerEvent.peek() != null) {
+      personalTimerEvent.peek().cancel();
+    }
     personalTimerEvent.poll();
   }
 

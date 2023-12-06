@@ -11,13 +11,11 @@ public class WritingThread extends Thread {
 
   private final Scanner scanner = new Scanner(System.in);
   private Socket socket = null;
-  private CurrentClient currentClient = null;
   private IOFrame frame = null;
 
 
   public WritingThread(Socket socket, CurrentClient currentClient, IOFrame frame) {
     this.socket = socket;
-    this.currentClient = currentClient;
     this.frame = frame;
   }
 

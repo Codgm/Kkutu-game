@@ -14,8 +14,8 @@ public class TimerEvent extends TimerTask {
   private final int time;
   private final boolean isPersonalTimer;
   private final Words words = Words.getInstance();
-  private int curTime = 0;
-  private ArrayList<Socket> list = null;
+  private int curTime;
+  private ArrayList<Socket> list;
 
   public TimerEvent(int time, boolean isPersonalTimer, ArrayList<Socket> list) {
     this.isPersonalTimer = isPersonalTimer;

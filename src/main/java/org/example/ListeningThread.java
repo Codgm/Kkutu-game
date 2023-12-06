@@ -14,8 +14,8 @@ import java.util.regex.Pattern;
 public class ListeningThread extends Thread {
 
   private final String name;
-  private Socket socket = null;
-  private IOFrame frame = null;
+  private Socket socket;
+  private IOFrame frame;
 
   public ListeningThread(Socket socket, CurrentClient currentClient, String name, IOFrame frame) {
     this.socket = socket;

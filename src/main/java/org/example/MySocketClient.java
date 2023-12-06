@@ -13,7 +13,7 @@ public class MySocketClient {
 
   public static void main(String[] args) {
     try {
-      Socket socket = null;
+      Socket socket;
       socket = new Socket("localhost", 1234);
       frame.setSocket(socket);
       System.out.println("Connected to Server");

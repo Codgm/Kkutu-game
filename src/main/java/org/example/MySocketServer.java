@@ -28,7 +28,7 @@ public class MySocketServer extends Thread {
   private final Names names = Names.getInstance();
   private final DataBase db = new DataBase(
       Passwd.getPasswd());
-  private Socket socket = null;
+  private Socket socket;
 
 
   public MySocketServer(Socket socket) {
@@ -73,7 +73,7 @@ public class MySocketServer extends Thread {
       printWriter.println("Enter The ID");
 
       String readValue;
-      String name = null;
+      String name;
       boolean identify = false;
 
       readValue = bufferedReader.readLine();

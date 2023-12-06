@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class Names {
 
   private static Names instance = null;
-  ArrayList<String> names = new ArrayList<>();
+  final ArrayList<String> names = new ArrayList<>();
 
   private Names() {
   }

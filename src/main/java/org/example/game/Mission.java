@@ -6,7 +6,7 @@ import java.util.Random;
 public class Mission {
 
   private final ArrayList<String> missionList = new ArrayList<>();
-  Random random = new Random();
+  final Random random = new Random();
   private int indexNum;
   private String missionWord;
 

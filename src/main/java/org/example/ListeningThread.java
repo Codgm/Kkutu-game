@@ -13,16 +13,14 @@ import java.util.regex.Pattern;
 
 public class ListeningThread extends Thread {
 
-  WritingThread t2;
   private final String name;
   private final Socket socket;
   private final IOFrame frame;
 
-  public ListeningThread(Socket socket, CurrentClient currentClient, String name, IOFrame frame,WritingThread t2) {
+  public ListeningThread(Socket socket, CurrentClient currentClient, String name, IOFrame frame) {
     this.socket = socket;
     this.name = name;
     this.frame = frame;
-    this.t2 = t2;
   }
 
   public void run() {

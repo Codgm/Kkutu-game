@@ -34,8 +34,8 @@ public class MySocketClient {
       }
     }
 
+    ListeningThread t1 = new ListeningThread(socket, currentClient, name, frame);
     WritingThread t2 = new WritingThread(socket, currentClient, frame);
-    ListeningThread t1 = new ListeningThread(socket, currentClient, name, frame,t2);
     t1.start();
     t2.start(); // WritingThread Start
   }

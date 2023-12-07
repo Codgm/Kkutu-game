@@ -121,6 +121,7 @@ public class MySocketServer extends Thread {
               printWriter2.println("Game Ended");
               printWriter2.println("Loser : " + queue.getCurrentClientName());
             }
+            //break;
           } else {
             game.updateRound();
             OutputStream outputStream2 = socket.getOutputStream();
@@ -137,7 +138,6 @@ public class MySocketServer extends Thread {
           }
         }
         readValue = bufferedReader.readLine();
-        System.out.println("readValue : " + readValue);
         if (readValue == null) {
           break;
         }
@@ -149,7 +149,6 @@ public class MySocketServer extends Thread {
           PrintWriter printWriter3 = new PrintWriter(outputStreamWriter3, true);
           printWriter3.println("turn : " + queue.getCurrentClientName());
         }
-        System.out.println("Client : " + name + " Message : " + readValue);
         if(readValue.equals("Reset")) {
           Game game = Game.getInstance();
           ArrayList<Socket> temp=new ArrayList<>(list);

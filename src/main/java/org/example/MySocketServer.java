@@ -13,6 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Timer;
+import javax.lang.model.type.ArrayType;
 import org.example.game.Mission;
 import org.example.game.Names;
 import org.example.game.Passwd;
@@ -265,6 +266,7 @@ public class MySocketServer extends Thread {
             queue.pollTimerEvent(list);
             game.setChain(game.getChain() + 1);
             game.updateScore(name, readValue.length());
+            ArrayList<String> means = game.getMean(readValue, game.getLanguage());
             for (Socket value : list) {
               OutputStream outputStream2 = value.getOutputStream();
               OutputStreamWriter outputStreamWriter2 = new OutputStreamWriter(outputStream2,
@@ -281,7 +283,7 @@ public class MySocketServer extends Thread {
                   "Score: " + game.getScore(name) + " Name: " + name);//Maybe here is error
               game.setMission(false);
               writer2.println("Mean :");
-              for (String mean : game.getMean(readValue, game.getLanguage())) {
+              for(String mean : means){
                 writer2.println(mean);
               }
               writer2.println("Last Char : " + game.getLastChar());

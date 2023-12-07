@@ -282,7 +282,7 @@ public class MySocketServer extends Thread {
               writer2.println(
                   "Score: " + game.getScore(name) + " Name: " + name);//Maybe here is error
               game.setMission(false);
-              writer2.println("Mean :");
+              writer2.print("Mean :");
               for(String mean : means){
                 writer2.println(mean);
               }

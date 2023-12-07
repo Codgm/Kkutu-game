@@ -106,6 +106,7 @@ public class ListeningThread extends Thread {
             throw new IllegalArgumentException("Wrong format");
           }
         } else if (tmp.equals("Reset")) {
+
           frame.reset();
           MySocketClient.make();
         }

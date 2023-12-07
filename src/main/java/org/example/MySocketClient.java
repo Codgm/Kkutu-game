@@ -7,7 +7,8 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 public class MySocketClient {
-
+  static ListeningThread t1;
+  static WritingThread t2;
   public static void make() throws IOException {
     IOFrame frame = new IOFrame("Client");
     Socket socket;
@@ -31,14 +32,19 @@ public class MySocketClient {
       }
     }
 
-    ListeningThread t1 = new ListeningThread(socket, name, frame);
-    WritingThread t2 = new WritingThread(socket, frame);
+    t1 = new ListeningThread(socket, name, frame);
+    t2 = new WritingThread(socket, frame);
     t1.start();
     t2.start(); // WritingThread Start
+  }
+  public static void reset(){
+    t1.interrupt();
+    t2.interrupt();
   }
   public static void main(String[] args) {
     try {
       make();
+      reset();
     } catch (IOException e) {
       e.printStackTrace();
     }

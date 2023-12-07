@@ -119,6 +119,7 @@ public class MySocketServer extends Thread {
               PrintWriter printWriter2 = new PrintWriter(outputStreamWriter2, true);
               printWriter2.println("Game Ended");
               printWriter2.println("Loser : " + queue.getCurrentClientName());
+              if(timerEvent!=null)timerEvent.cancel();
             }
             wordSetting.setIsTimeOver(false);
             wordSetting.setIsEnd(false);
@@ -176,7 +177,7 @@ public class MySocketServer extends Thread {
           Game game = Game.getInstance();
           timer = new Timer();
           wordSetting.setRoundTime(wordSetting.getInitialRoundTime());
-          timerEvent.cancel();
+          if(timerEvent != null) timerEvent.cancel();
           timerEvent = new TimerEvent(wordSetting.getInitialRoundTime(), false, list);
           for (Socket value : list) {
             OutputStream outputStream2 = value.getOutputStream();

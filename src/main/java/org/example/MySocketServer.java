@@ -120,6 +120,8 @@ public class MySocketServer extends Thread {
               printWriter2.println("Game Ended");
               printWriter2.println("Loser : " + queue.getCurrentClientName());
             }
+            wordSetting.setIsTimeOver(false);
+            wordSetting.setIsEnd(false);
             //break;
           } else {
             game.updateRound();

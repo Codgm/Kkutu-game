@@ -29,6 +29,9 @@ public class IOFrame extends JFrame {
   private final Map<String, Integer> clientScore = new HashMap<>();
   private final String[] turnState = {" | Waiting...", " | Your turn", " | Opponent turn"};
   final Font font = new Font("Malgun Gothic", Font.PLAIN, 10);
+
+  final JPanel entire = new JPanel();
+  final JPanel missionAndLastchar = new JPanel();
   final JPanel mainPage = new JPanel();
   final JPanel gamePage = new JPanel();
   final JPanel scorePage = new JPanel();
@@ -39,6 +42,8 @@ public class IOFrame extends JFrame {
   final JScrollPane scrollRecord = new JScrollPane(recordTextArea);
   final JTextField inputTextField = new JTextField();
   final JLabel scoreLabel = new JLabel("    Score    ");
+  final JLabel missionLabel = new JLabel("Mission: Waiting...   |   ");
+  final JLabel lastCharLabel = new JLabel("Last Char: Waiting...");
   private boolean isBeforeFirstRound = true;//처음 한 번만 true고 그 이후로는 항상 false
   private String lastTurn = null;//마지막으로 누구의 턴이었는지, 라운드 종료됀 상태에서 필요함
   private String userName = null;
@@ -60,6 +65,8 @@ public class IOFrame extends JFrame {
     inputLabel.setFont(new Font("Malgun Gothic Bold", Font.PLAIN, 15));
 
     this.setTitle(userName);
+    entire.setLayout(new BorderLayout());
+    missionAndLastchar.setLayout(new BorderLayout());
     mainPage.setLayout(new BorderLayout());
     gamePage.setLayout(new BorderLayout());
     scorePage.setLayout(new BorderLayout());
@@ -121,6 +128,8 @@ public class IOFrame extends JFrame {
         }
       }
     });
+    missionAndLastchar.add(missionLabel, BorderLayout.WEST);
+    missionAndLastchar.add(lastCharLabel, BorderLayout.CENTER);
 
     stateLayout.add(turnLabel, BorderLayout.EAST);
     stateLayout.add(roundTimeLabel, BorderLayout.CENTER);
@@ -136,10 +145,16 @@ public class IOFrame extends JFrame {
     scorePage.add(scoreLabel, BorderLayout.NORTH);
     scorePage.add(eachClientScore);
 
+    mainPage.add(missionAndLastchar, BorderLayout.NORTH);
     mainPage.add(gamePage, BorderLayout.CENTER);
-    mainPage.add(scorePage, BorderLayout.WEST);
 
-    this.add(mainPage);
+    entire.add(mainPage, BorderLayout.CENTER);
+    entire.add(scorePage, BorderLayout.WEST);
+
+    //entire.add(missionAndLastchar,BorderLayout.NORTH);
+    //entire.add(mainPage, BorderLayout.CENTER);
+
+    this.add(entire);
 
     setSize(700, 340);
     setResizable(true);
@@ -171,6 +186,9 @@ public class IOFrame extends JFrame {
   void setTurnStateValue(int turnStateValue) {
     this.turnStateValue = turnStateValue;
     turnLabel.setText(turnState[turnStateValue]);
+    if(turnStateValue == 2){
+      missionLabel.setText("Mission: Waiting...   |   ");
+    }
   }
 
   void clearRecordDate() {
@@ -231,7 +249,12 @@ public class IOFrame extends JFrame {
     eachClientScore.revalidate();
     eachClientScore.repaint();
   }
-
+  public void updateMission(String mission){
+    missionLabel.setText("Mission: " + "'"+mission+"'" + "   |   ");
+  }
+  public void updateLastChar(String lastChar){
+    lastCharLabel.setText("Last Char: " + "'"+lastChar+"'");
+  }
   public void reset() {
     this.dispose();
   }

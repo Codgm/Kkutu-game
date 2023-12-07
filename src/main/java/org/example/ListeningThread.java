@@ -109,6 +109,11 @@ public class ListeningThread extends Thread {
 
           frame.reset();
           MySocketClient.make();
+        } else if (tmp.contains("Last Char : ")) {
+          frame.updateLastChar(tmp.substring(12));
+          frame.pushRecordData(tmp + "\n");
+        } else if (tmp.contains("Mission word: ")) {
+          frame.updateMission(tmp.substring(14));
         }
 				/*
 				else if(tmp.contains("Game Started")) {

@@ -122,7 +122,7 @@ public class MySocketServer extends Thread {
             }
             wordSetting.setIsTimeOver(false);
             wordSetting.setIsEnd(false);
-            //break;
+            break;
           } else {
             game.updateRound();
             OutputStream outputStream2 = socket.getOutputStream();

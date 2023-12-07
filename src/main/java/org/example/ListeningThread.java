@@ -37,6 +37,9 @@ public class ListeningThread extends Thread {
 
       while (true) {
         String tmp = reader.readLine();
+        if (tmp == null) {
+          continue;
+        }
         if (tmp.contains("Current Client : ")) {
           String name = tmp.substring(17);
           if (this.name.equals(name)) {

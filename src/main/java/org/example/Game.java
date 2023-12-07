@@ -76,8 +76,6 @@ public class Game {
         setLastChar(tmp.charAt(tmp.length() - 1));
         queue.getNextClient();
         return true;
-      } else {
-        return false;
       }
     }
     if (tmp.charAt(0) == getLastChar() && db.select(tmp, getLanguage(), false) && !words.contains(

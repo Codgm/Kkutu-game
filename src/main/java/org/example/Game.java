@@ -1,44 +1,43 @@
 package org.example;
 
-import java.io.IOException;
+import static java.lang.Math.pow;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import javax.xml.parsers.ParserConfigurationException;
 import org.example.game.MeanApi;
 import org.example.game.Names;
 import org.example.game.Passwd;
-import org.xml.sax.SAXException;
+import org.example.game.Words;
 
 public class Game {
 
-  private static Game instance = null;
   private static final Map<String, Integer> score = new HashMap<>(); //점수 기록용
+  private static Game instance = null;
+  private final ClientQueue clientQueue = ClientQueue.getInstance();
+  private final Words wordSetting = Words.getInstance();
   private final ArrayList<String> words = new ArrayList<>();
-  private final DataBase db = new DataBase("jdbc:postgresql://localhost:5432/kkutudb", "postgres",
+  private final DataBase db = new DataBase(
       Passwd.getPasswd());
   private final ClientQueue queue = ClientQueue.getInstance();
   private final Names names = Names.getInstance();
-  private String currentWord = null;
+  private final Map<String, Integer> roundScore = new HashMap<>(); //라운드별 점수 기록용
   private char lastChar = ' ';
   private int round;
 
   private String startWord;
 
   private boolean injeong = false;
-  private boolean manner = false;
-
+  private boolean mission = false;
   private String language;
-
-  private int time = 0; //친 시간을 기억해놓고 점수계산하는데에 사용하기 위해서.
-
   private int chain = 0; //chain까지 정해놔야 점수계산할때 사용할 수 있네?
 
   private Game() {
     db.connect();
     for (String name : names.getNames()) {
       score.put(name, 0);
+      roundScore.put(name, 0);
     }
   }
 
@@ -49,12 +48,11 @@ public class Game {
     return instance;
   }
 
-  public synchronized String getCurrentWord() {
-    return this.currentWord;
+  public void setMission(boolean mission) {
+    this.mission = mission;
   }
 
-  public synchronized void setCurrentWord(String currentWord) {
-    this.currentWord = currentWord;
+  public synchronized void setCurrentWord() {
   }
 
   public synchronized char getLastChar() {
@@ -74,18 +72,16 @@ public class Game {
       if (tmp.charAt(0) == getLastChar() && db.select(tmp, getLanguage(), true) && !words.contains(
           tmp)) {
         words.add(tmp);
-        setCurrentWord(tmp);
+        setCurrentWord();
         setLastChar(tmp.charAt(tmp.length() - 1));
         queue.getNextClient();
         return true;
-      } else {
-        return false;
       }
     }
     if (tmp.charAt(0) == getLastChar() && db.select(tmp, getLanguage(), false) && !words.contains(
         tmp)) {
       words.add(tmp);
-      setCurrentWord(tmp);
+      setCurrentWord();
       setLastChar(tmp.charAt(tmp.length() - 1));
       queue.getNextClient();
       return true;
@@ -97,29 +93,40 @@ public class Game {
   public synchronized void updateRound() {
     //점수 처리.
     String loser = queue.getCurrentClientName();
-    //score.replace(loser, );
+    score.replace(loser, score.get(loser) - roundScore.get(loser));
     setRound(getRound() + 1);
     setLastChar(startWord.charAt(getRound() - 1));
-    setCurrentWord(null);
+    setCurrentWord();
+    for (String name : names.getNames()) {
+      roundScore.replace(name, 0);
+    }
+    chain = 0;
     words.clear();
   }
 
+
   public synchronized void updateScore(String name, int length) {
-    //점수 처리.
-    //score.replace(name,);
+    int tmp = (int) (2 * (pow((5 + 7 * length), 0.74) + 0.88 * chain) * (1
+        - clientQueue.getTimerEvent().getRemainTime() / wordSetting.getRoundTime()) * (1 + 0.5 * (
+        mission ? 1 : 0)));
+    score.replace(name, score.get(name) + tmp);
+    roundScore.replace(name, roundScore.get(name) + tmp);
   }
 
-  public ArrayList<String> getMean(String word, String lang)
-      throws ParserConfigurationException, IOException, SAXException {
+  public ArrayList<String> getMean(String word, String lang) {
     ArrayList<String> means = new ArrayList<>();
-    if(lang.equals("en")) {
+    //어인정 판단. 어인정은 뜻이 없음.
+    if (db.selectType(word, lang).contains("INJEONG")) {
+      means.add("어인정은 뜻이 없습니다");
+      return means;
+    }
+    if (lang.equals("en")) {
       String mean = db.getMeanByWord(word, "en");
       //;기준으로 분리
       String[] meanList = mean.split(";");
       means.addAll(Arrays.asList(meanList));
-    }
-    else {
-      means = MeanApi.getMean(word);
+    } else {
+      means = MeanApi.getMeans(word);
     }
     return means;
   }
@@ -141,20 +148,8 @@ public class Game {
     this.startWord = startWord;
   }
 
-  public synchronized boolean getInjeong() {
-    return this.injeong;
-  }
-
   public synchronized void setInjeong(boolean injeong) {
     this.injeong = injeong;
-  }
-
-  public synchronized boolean getManner() {
-    return this.manner;
-  }
-
-  public synchronized void setManner(boolean manner) {
-    this.manner = manner;
   }
 
   public synchronized String getLanguage() {
@@ -177,12 +172,6 @@ public class Game {
     this.chain = chain;
   }
 
-  public synchronized int getTime() {
-    return this.time;
-  }
-
-  public synchronized void setTime(int time) {
-    this.time = time;
-  }
-
+  public void reset() {
+    instance = null;}
 }

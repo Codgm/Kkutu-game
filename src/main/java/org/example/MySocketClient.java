@@ -1,52 +1,53 @@
 package org.example;
 
-import java.awt.Font;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.nio.Buffer;
-import java.util.Scanner;
 
 public class MySocketClient {
+  static ListeningThread t1;
+  static WritingThread t2;
+  public static void make() throws IOException {
+    IOFrame frame = new IOFrame("Client");
+    Socket socket;
+    socket = new Socket("localhost", 1234);
+    frame.setSocket(socket);
+    System.out.println("Connected to Server");
+    OutputStream out = socket.getOutputStream();
+    PrintWriter writer = new PrintWriter(out, true);
+    BufferedReader reader = new BufferedReader(
+        new java.io.InputStreamReader(socket.getInputStream()));
+    String message;
+    String name = null;
+    while ((message = reader.readLine()) != null) {
+      //System.out.println(message);
+      frame.pushRecordData(message + "\n");
+      if (message.equals("Enter The ID")) {
+        name = frame.getInputText();
+        frame.setFrameTitle(name);
+        writer.println(name);
+        break;
+      }
+    }
 
-  private static final IOFrame frame = new IOFrame("Client");
-
+    t1 = new ListeningThread(socket, name, frame);
+    t2 = new WritingThread(socket, frame);
+    t1.start();
+    t2.start(); // WritingThread Start
+  }
+  public static void reset(){
+    t1.interrupt();
+    t2.interrupt();
+  }
   public static void main(String[] args) {
     try {
-      Socket socket = null;
-      socket = new Socket("localhost", 1234);
-      System.out.println("Connected to Server");
-      OutputStream out = socket.getOutputStream();
-      PrintWriter writer = new PrintWriter(out, true);
-      BufferedReader reader = new BufferedReader(
-          new java.io.InputStreamReader(socket.getInputStream()));
-      Scanner scanner = new Scanner(System.in);
-      CurrentClient currentClient = new CurrentClient();
-      String message;
-      String name = null;
-      while ((message = reader.readLine()) != null) {
-        //System.out.println(message);
-        frame.pushRecordData(message+"\n");
-        if (message.equals("Enter The ID")) {
-          name = frame.getInputText();
-          frame.setFrameTitle(name);
-          writer.println(name);
-          break;
-        }
-      }
-
-      ListeningThread t1 = new ListeningThread(socket, currentClient, name, frame);
-      WritingThread t2 = new WritingThread(socket, currentClient, frame);
-      t1.start();
-      t2.start(); // WritingThread Start
-
+      make();
+      reset();
     } catch (IOException e) {
       e.printStackTrace();
     }
   }
 
 }
-

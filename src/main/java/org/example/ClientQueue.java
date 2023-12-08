@@ -1,52 +1,72 @@
 package org.example;
 
+import java.net.Socket;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.Timer;
+import org.example.game.Names;
+import org.example.game.TimeSet;
 import org.example.game.TimerEvent;
+import org.example.game.Words;
 
 public class ClientQueue {
-    private static ClientQueue instance = null;
-    private volatile Queue<String> queue = new LinkedList<>();
-    private volatile String currentClientName = null;
-    private Queue<TimerEvent> personalTimerEvent=new LinkedList<>();
 
-    private ClientQueue() {}
+  private static ClientQueue instance = null;
+  private final Words words = Words.getInstance();
+  private final Names names = Names.getInstance();
+  private final Queue<String> queue = new LinkedList<>();
+  private final Queue<TimerEvent> personalTimerEvent = new LinkedList<>();
+  private volatile String currentClientName = null;
 
-    public synchronized static ClientQueue getInstance() {
-        if (instance == null) {
-            instance = new ClientQueue();
-        }
-        return instance;
-    }
 
-    public void addClient(String name) {
-        queue.add(name);
-        personalTimerEvent.add(new TimerEvent(10,true));
-        System.out.println("timerAdded-"+personalTimerEvent.size()+"left");//Debugging
-        if (queue.size() == 1) {
-            currentClientName = queue.peek();
-        }
-    }
+  private ClientQueue() {
+  }
 
-    public void getNextClient() {
-        queue.add(currentClientName);
-        personalTimerEvent.add(new TimerEvent(10,true));
-        queue.poll();
-        currentClientName = queue.peek();
-        System.out.println("timerAdded-"+personalTimerEvent.size()+"left");//Debugging
+  public synchronized static ClientQueue getInstance() {
+    if (instance == null) {
+      instance = new ClientQueue();
+    }
+    return instance;
+  }
 
+  public void addClient(String name) {
+    queue.add(name);
+    if (queue.size() == 1) {
+      currentClientName = queue.peek();
     }
-    public TimerEvent getTimerEvent(){
-        return personalTimerEvent.peek();
-    }
-    public synchronized void pollTimerEvent(){
-        personalTimerEvent.add(new TimerEvent(10,true));
-        personalTimerEvent.peek().cancel();
-        personalTimerEvent.poll();
-    }
+  }
 
-    public String getCurrentClientName() {
-        return currentClientName;
+  public void addTimer(ArrayList<Socket> list) {
+    for (String name : names.getNames()) {
+      personalTimerEvent.add(new TimerEvent(TimeSet.timeSet(words.getRoundTime()), true, list));
     }
+  }
+
+  public void getNextClient() {
+    queue.add(currentClientName);
+    queue.poll();
+    currentClientName = queue.peek();
+    System.out.println("timerAdded-" + personalTimerEvent.size() + "left");//Debugging
+
+  }
+
+  public TimerEvent getTimerEvent() {
+    return personalTimerEvent.peek();
+  }
+
+  public synchronized void pollTimerEvent(ArrayList<Socket> list) {
+    personalTimerEvent.add(new TimerEvent(TimeSet.timeSet(words.getRoundTime()), true, list));
+    if (personalTimerEvent.peek() != null) {
+      personalTimerEvent.peek().cancel();
+    }
+    personalTimerEvent.poll();
+  }
+
+  public String getCurrentClientName() {
+    return currentClientName;
+  }
+
+  public void reset() {
+    instance= null;
+  }
 }

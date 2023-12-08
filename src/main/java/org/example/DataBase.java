@@ -3,9 +3,8 @@ package org.example;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class DataBase {
@@ -16,9 +15,9 @@ public class DataBase {
 
   private Connection connection;
 
-  DataBase(String url, String id, String password) {
-    this.url = url;
-    this.id = id;
+  DataBase(String password) {
+    this.url = "jdbc:postgresql://localhost:5432/kkutudb";
+    this.id = "postgres";
     this.password = password;
   }
 
@@ -48,11 +47,7 @@ public class DataBase {
       } else {
         if (resultSet.next()) {
           String type = resultSet.getString("type");
-          if (type.contains("INJEONG")) {
-            return false;
-          } else {
-            return true;
-          }
+          return !type.contains("INJEONG");
         } else {
           return false;
         }
@@ -62,11 +57,26 @@ public class DataBase {
     }
   }
 
+  public String selectType(String string, String lang) {
+    try {
+      String query = "SELECT type FROM public.kkutu_" + lang + " WHERE _id = '" + string + "'";
+      PreparedStatement preparedStatement = connection.prepareStatement(query);
+      ResultSet resultSet = preparedStatement.executeQuery();
+      if (resultSet.next()) {
+        return resultSet.getString("type");
+      } else {
+        return null;
+      }
+    } catch (SQLException e) {
+      return null;
+    }
+  }
 
-  public ArrayList<String> selectWords(int round, String lang, boolean injeong) {
+
+  public ArrayList<String> selectWords(int round, String lang) {
     //우선 en으로 설정. 추후 Parameter로 받아서 언어 설정할 수 있게 변경.
     String query = "SELECT _id FROM public.kkutu_" + lang + " WHERE CHAR_LENGTH(_id) = " + round;
-    ArrayList<String> words = new ArrayList<String>();
+    ArrayList<String> words = new ArrayList<>();
     try {
       PreparedStatement preparedStatement = connection.prepareStatement(query);
       ResultSet resultSet = preparedStatement.executeQuery();

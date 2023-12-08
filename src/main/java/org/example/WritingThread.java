@@ -2,24 +2,18 @@ package org.example;
 
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
-import java.util.Scanner;
-import java.util.concurrent.Semaphore;
 
 public class WritingThread extends Thread {
-	private Socket socket = null;
-	private Scanner scanner = new Scanner(System.in);
 
-  private CurrentClient currentClient = null;
-  private IOFrame frame = null;
+  private final Socket socket;
+  private final IOFrame frame;
 
 
-  public WritingThread(Socket socket, CurrentClient currentClient, IOFrame frame) {
+  public WritingThread(Socket socket, IOFrame frame) {
     this.socket = socket;
-    this.currentClient = currentClient;
     this.frame = frame;
   }
 
@@ -33,7 +27,7 @@ public class WritingThread extends Thread {
       PrintWriter writer = new PrintWriter(outputStreamWriter, true);
       while (true) {
         //String tmp = scanner.nextLine();
-        String tmp=frame.getInputText();
+        String tmp = frame.getInputText();
 				/* -> Client단 말고 Server단에서 처리하기로 변경..
 				if(name.equals(currentClient.getName())) {
 					if(tmp.contains(" ")) {

@@ -13,23 +13,24 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Timer;
+import javax.lang.model.type.ArrayType;
+import org.example.game.Mission;
 import org.example.game.Names;
 import org.example.game.Passwd;
 import org.example.game.TimerEvent;
 import org.example.game.Words;
 
 public class MySocketServer extends Thread {
+  private static TimerEvent timerEvent;
 
-  private static final ArrayList<Socket> list = new ArrayList<Socket>();
+  private static final ArrayList<Socket> list = new ArrayList<>();
   private final ClientQueue queue = ClientQueue.getInstance();
 
   private final Words wordSetting = Words.getInstance();
   private final Names names = Names.getInstance();
-  private final DataBase db = new DataBase("jdbc:postgresql://localhost:5432/kkutudb", "postgres",
+  private final DataBase db = new DataBase(
       Passwd.getPasswd());
-  private Socket socket = null;
-  private ArrayList<String> words = new ArrayList<String>();
-  private String startWord = null;
+  private final Socket socket;
 
 
   public MySocketServer(Socket socket) {
@@ -74,25 +75,34 @@ public class MySocketServer extends Thread {
       printWriter.println("Enter The ID");
 
       String readValue;
-      String name = null;
-      boolean identify = false;
+      String name;
 
       readValue = bufferedReader.readLine();
       name = readValue;
       names.add(name);
       queue.addClient(name);
+      for (Socket element : list) {//name보다 list가 먼저 add되기 때문에 ㄱㅊ
+        OutputStream outputStream2 = element.getOutputStream();
+        OutputStreamWriter outputStreamWriter2 = new OutputStreamWriter(outputStream2,
+            StandardCharsets.UTF_8);
+        PrintWriter printWriter2 = new PrintWriter(outputStreamWriter2, true);
+        for (int j = 0; j < names.getNames().size(); j++) {//IOFrame이 저장하는 client 정보는 Map이라 중복 삭제해줌
+          printWriter2.println("New Client " + names.getNames().get(j));
+        }
+      }
 
       printWriter.println(name + " Connected");
 
       while (true) {
         Timer timer = new Timer();
+        Mission mission = new Mission();
         if (wordSetting.getIsEnd()) {
           if (wordSetting.getIsTimeOver()) {
             System.out.println("Time Out");
-            queue.pollTimerEvent();
+            queue.pollTimerEvent(list);
           }
-          for (int i = 0; i < list.size(); i++) {
-            OutputStream outputStream2 = list.get(i).getOutputStream();
+          for (Socket item : list) {
+            OutputStream outputStream2 = item.getOutputStream();
             // Use OutputStreamWriter to send UTF-8 encoded string
             OutputStreamWriter outputStreamWriter2 = new OutputStreamWriter(outputStream2,
                 StandardCharsets.UTF_8);
@@ -102,15 +112,18 @@ public class MySocketServer extends Thread {
           }
           Game game = Game.getInstance();
           if (game.getRound() == wordSetting.getFinalRound()) {
-            for (int i = 0; i < list.size(); i++) {
-              OutputStream outputStream2 = list.get(i).getOutputStream();
+            for (Socket value : list) {
+              OutputStream outputStream2 = value.getOutputStream();
               // Use OutputStreamWriter to send UTF-8 encoded string
               OutputStreamWriter outputStreamWriter2 = new OutputStreamWriter(outputStream2,
                   StandardCharsets.UTF_8);
               PrintWriter printWriter2 = new PrintWriter(outputStreamWriter2, true);
               printWriter2.println("Game Ended");
               printWriter2.println("Loser : " + queue.getCurrentClientName());
+              if(timerEvent!=null)timerEvent.cancel();
             }
+            wordSetting.setIsTimeOver(false);
+            wordSetting.setIsEnd(false);
             break;
           } else {
             game.updateRound();
@@ -132,14 +145,43 @@ public class MySocketServer extends Thread {
           break;
         }
         System.out.println("Current Client : " + queue.getCurrentClientName());
+        for (Socket item : list) {
+          OutputStream outputStream3 = item.getOutputStream();
+          OutputStreamWriter outputStreamWriter3 = new OutputStreamWriter(outputStream3,
+              StandardCharsets.UTF_8);
+          PrintWriter printWriter3 = new PrintWriter(outputStreamWriter3, true);
+          printWriter3.println("turn : " + queue.getCurrentClientName());
+        }
+        if(readValue.equals("Reset")) {
+          Game game = Game.getInstance();
+          ArrayList<Socket> temp=new ArrayList<>(list);
+          game.reset();
+          queue.reset();
+          wordSetting.reset();
+          if(timerEvent != null) timerEvent.cancel();
+          timerEvent=null;
+          timer.cancel();
+          names.reset();
+          list.clear();
+          for (Socket value : temp) {
+            OutputStream outputStream2 = value.getOutputStream();
+            // Use OutputStreamWriter to send UTF-8 encoded string
+            OutputStreamWriter outputStreamWriter2 = new OutputStreamWriter(outputStream2,
+                StandardCharsets.UTF_8);
+            PrintWriter printWriter2 = new PrintWriter(outputStreamWriter2, true);
+            printWriter2.println("Reset");
+          }
+        }
         //처음 세팅이 아닐때,
-        if (readValue.equals("Start") && name.equals(queue.getCurrentClientName())
+        else if (readValue.equals("Start") && name.equals(queue.getCurrentClientName())
             && wordSetting.getRoundFlag()) {
           Game game = Game.getInstance();
           timer = new Timer();
-          TimerEvent timerEvent = new TimerEvent(wordSetting.getRoundTime(), false);
-          for (int i = 0; i < list.size(); i++) {
-            OutputStream outputStream2 = list.get(i).getOutputStream();
+          wordSetting.setRoundTime(wordSetting.getInitialRoundTime());
+          if(timerEvent != null) timerEvent.cancel();
+          timerEvent = new TimerEvent(wordSetting.getInitialRoundTime(), false, list);
+          for (Socket value : list) {
+            OutputStream outputStream2 = value.getOutputStream();
             // Use OutputStreamWriter to send UTF-8 encoded string
             OutputStreamWriter outputStreamWriter2 = new OutputStreamWriter(outputStream2,
                 StandardCharsets.UTF_8);
@@ -168,27 +210,29 @@ public class MySocketServer extends Thread {
           }
           String language = readValue;
           game.setLanguage(language);
-          printWriter2.println("Write a Option(1. injeong(Only Korean), 2. manner)");
+          printWriter2.println("Write a Option(Injeong) : 1. Injeong 0. Not Injeong");
           String option = bufferedReader.readLine();
           game.setInjeong(option.equals("1"));
           printWriter2.println("Write a RoundTime");
           int roundTime = Integer.parseInt(bufferedReader.readLine());
           wordSetting.setRoundTime(roundTime);
-          TimerEvent timerEvent = new TimerEvent(roundTime, false);
+          wordSetting.setInitialRoundTime(roundTime);
+          timerEvent = new TimerEvent(roundTime, false, list);
           printWriter2.println("Write a Round");
           String round = bufferedReader.readLine();
           wordSetting.setFinalRound(Integer.parseInt(round));
           wordSetting.setRoundFlag(true);
           Random random = new Random();
-          words = db.selectWords(wordSetting.getFinalRound(), game.getLanguage(),
-              game.getInjeong());
-          startWord = words.get(random.nextInt(words.size()));
+          ArrayList<String> words = db.selectWords(wordSetting.getFinalRound(), game.getLanguage()
+          );
+          String startWord = words.get(random.nextInt(words.size()));
           game.setStartWord(startWord);
-          game.setCurrentWord(startWord);
+          game.setCurrentWord();
           game.setRound(1);
           game.setLastChar(startWord.charAt(0));
-          for (int i = 0; i < list.size(); i++) {
-            OutputStream outputStream3 = list.get(i).getOutputStream();
+          queue.addTimer(list);
+          for (Socket value : list) {
+            OutputStream outputStream3 = value.getOutputStream();
             // Use OutputStreamWriter to send UTF-8 encoded string
             OutputStreamWriter outputStreamWriter3 = new OutputStreamWriter(outputStream3,
                 StandardCharsets.UTF_8);
@@ -201,35 +245,55 @@ public class MySocketServer extends Thread {
           }
           printWriter.println("Server Ok");
           timer.scheduleAtFixedRate(timerEvent, 0, 1000);
-        } else if (wordSetting.getRoundFlag() && name.equals(queue.getCurrentClientName())) {
+        }
+        //게임 자기차례일떄..
+        else if (wordSetting.getRoundFlag() && name.equals(queue.getCurrentClientName())) {
           if (readValue.equals("Client Ok")) {
             Timer timer2 = new Timer();
             //TimerEvent personalTimerEvent = new TimerEvent(10,true);
             timer2.scheduleAtFixedRate(queue.getTimerEvent(), 0, 1000);
           }
+          Game game = Game.getInstance();
+          if (game.getLanguage().equals("ko")) {
+            mission.makeRandomMissionChar();
+            printWriter.println("Mission word: " + mission.getMissionWord());
+          }
           readValue = bufferedReader.readLine();
           if (wordSetting.getIsEnd()) {
             continue;
           }
-          Game game = Game.getInstance();
           if (game.check(readValue)) {
-            queue.pollTimerEvent();
-            for (int i = 0; i < list.size(); i++) {
-              OutputStream outputStream2 = list.get(i).getOutputStream();
+            queue.pollTimerEvent(list);
+            game.setChain(game.getChain() + 1);
+            game.updateScore(name, readValue.length());
+            ArrayList<String> means = game.getMean(readValue, game.getLanguage());
+            for (Socket value : list) {
+              OutputStream outputStream2 = value.getOutputStream();
               OutputStreamWriter outputStreamWriter2 = new OutputStreamWriter(outputStream2,
                   StandardCharsets.UTF_8);
               PrintWriter writer2 = new PrintWriter(outputStreamWriter2, true);
-
               writer2.println("Correct Word : " + readValue);
-              writer2.println("Mean : " + game.getMean(readValue, game.getLanguage()));
+              if (game.getLanguage().equals("ko") && readValue.contains(mission.getMissionWord())) {
+                game.setMission(true);
+                writer2.println("Mission accomplished! You will get a bonus point.");
+              }
+              System.out.println(
+                  "Score: " + game.getScore(name) + " Name: " + name);//Maybe here is error
+              writer2.println(
+                  "Score: " + game.getScore(name) + " Name: " + name);//Maybe here is error
+              game.setMission(false);
+              writer2.print("Mean :");
+              for(String mean : means){
+                writer2.println(mean);
+              }
               writer2.println("Last Char : " + game.getLastChar());
               writer2.println("Current Client : " + queue.getCurrentClientName());
             }
           } else {
             //쓰레기값을 보내야 while문에서 readline을 받은후에 해당문으로 다시 돌아올 수 있음.
             printWriter.println("Wrong Word");
-            for (int i = 0; i < list.size(); i++) {
-              OutputStream outputStream2 = list.get(i).getOutputStream();
+            for (Socket value : list) {
+              OutputStream outputStream2 = value.getOutputStream();
               OutputStreamWriter outputStreamWriter2 = new OutputStreamWriter(outputStream2,
                   StandardCharsets.UTF_8);
               PrintWriter writer2 = new PrintWriter(outputStreamWriter2, true);
@@ -239,8 +303,8 @@ public class MySocketServer extends Thread {
 
         } else {
           //내 차례가 아닐때에는 채팅 모드로..
-          for (int i = 0; i < list.size(); i++) {
-            OutputStream outputStream2 = list.get(i).getOutputStream();
+          for (Socket value : list) {
+            OutputStream outputStream2 = value.getOutputStream();
             OutputStreamWriter outputStreamWriter2 = new OutputStreamWriter(outputStream2,
                 StandardCharsets.UTF_8);
             PrintWriter writer2 = new PrintWriter(outputStreamWriter2, true);

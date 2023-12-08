@@ -1,25 +1,19 @@
 # OpenKKuTu-Game
 OOP - Project4로 개발중인 글자로 놀자! 끄투의 게임서버 Java Rebase Version입니다.
 
-## TODO
-- 타이머가 능동적으로 들어오게끔 + 라운드의 제한시간이 아닌 개개인의 제한시간도 정해야함. 개개인의 제한시간은 라운드의 시간에 따라서 달라지게끔.
-- 지금 문제가 되는 게 타임아웃이 되어도 입력 기다리고 있으면 종료시키지 않는건데 타임아웃됄 때 TimerEvent 객체에서는 확인이 가능하니까 여기서 JFrame에 "TimeOut, If you wanna continue, please enter anyting" 출력하고 client가 아무거나 입력하면 JFrame 기록 없애고 다음 라운드 진행하는 쪽으로 구현하면 해결 가능할 듯, 해보고 되면 12/3에 커밋 올릴 때 같이 올림
-- ~~옵션들 추가~~
-- 웹이랑 어떻게 이을지? -> Spring User와 Client와 이어야하나...
-- DB단에 이상한 언어들 대충 수정해야함.
-- 한글 입력 및 출력 지원(writeUTF 쓰면 해결될듯함.)
-- 더러운 코드 좀 정리 ex) Game이랑 Words랑 통합하던가 기능을 확실하게 분리하던가..
-- 점수 계산식 추가 ![Method](https://github.com/jason0904/OpenKKuTu-Game/assets/37035547/23354fb0-e7f3-4330-bbf1-d2190e7fb030)
-
-## 구조
-- Main  -> GameServer <-> Client
-- Main에서 방을 팜. GameServer를 새로 구축하듯이.
-- GameServer는 Client를 받아서 Game을 만들고, Game은 Client를 받아서 Words를 만든다.
-
+## Build Environment
+JDK : Amazon Corretto 17.01
+OS : Windows 11
+Build System : Gradle 17
 
 ## How to run
 - Install PostgreSQL
 - PostgreSQL설치한 경로에서 cmd를 키고 createdb -U "postgres" "kkutudb"
 - psql -U "postgres" -d "kkutudb" -f "(프로젝트 경로)/OpenKKuTu-Game/src/main/resources/db.sql"
-- Passwd.java를 만들고 String passwd와 그에 getter를 넣어서 DB의 비밀번호를 넣는다.
+- Passwd.java에 "postgres" account의 password 삽입.
 - MySocketServer.java와 MySocketClient.java를 실행한다.
+
+## 혹시라도 끄투 서버에 참고하실 분들 위해 미구현된 부분
+- manner 미구현
+- Only 게임 규칙만 구현되어있음. 상점, 로그인, 이런 부분 다 따로 구현해야합니다
+- Client도 일단은 AWT로 구현되어있음. 이걸 실제로 사용하려면 WebSocket을 사용하는 웹 클라이언트를 따로 구현해야합니다.

@@ -223,9 +223,12 @@ public class MySocketServer extends Thread {
           wordSetting.setFinalRound(Integer.parseInt(round));
           wordSetting.setRoundFlag(true);
           Random random = new Random();
-          ArrayList<String> words = db.selectWords(wordSetting.getFinalRound(), game.getLanguage()
+          ArrayList<String> words= db.selectWords(wordSetting.getFinalRound(), game.getLanguage()
           );
-          String startWord = words.get(random.nextInt(words.size()));
+          String startWord= words.get(random.nextInt(words.size()));
+          while(startWord.matches(".*\\d+.*")){
+            startWord = words.get(random.nextInt(words.size()));
+          }
           game.setStartWord(startWord);
           game.setCurrentWord();
           game.setRound(1);

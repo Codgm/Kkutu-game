@@ -286,6 +286,7 @@ public class MySocketServer extends Thread {
                   "Score: " + game.getScore(name) + " Name: " + name);//Maybe here is error
               game.setMission(false);
               writer2.print("Mean :");
+              if(means.isEmpty()) writer2.println("Api can't find the mean");
               for(String mean : means){
                 writer2.println(mean);
               }

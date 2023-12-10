@@ -124,6 +124,10 @@ public class ListeningThread extends Thread {
 				}
 				 */
         else {
+          if (tmp.equals("Game Ended")) {
+            frame.disposeRanking();
+            frame.pushRecordData("\n");
+          }
           System.out.println(tmp);//for Debugging
           frame.pushRecordData(tmp + "\n");
           if (tmp.contains("Current Round : ")) {//첫 번째 라운드 시작 이후로 계속 false
@@ -131,6 +135,7 @@ public class ListeningThread extends Thread {
             frame.clearRecordDate();
             frame.setIsRoundEnd(false);
           }
+
         }
       }
 

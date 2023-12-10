@@ -10,7 +10,11 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
@@ -81,12 +85,11 @@ public class IOFrame extends JFrame {
       public void keyTyped(KeyEvent e) {
         if (e.getKeyChar() == '\n') {
           inputText = inputTextField.getText();
-          if(inputText.equals("Reset")) {
+          if (inputText.equals("Reset")) {
             isInputTextValid = true;
             inputTextField.setText("");
             isInputTextValid = false;
-          }
-          else if (!isRoundEnd) {
+          } else if (!isRoundEnd) {
             isInputTextValid = true;
           }
           inputTextField.setText("");
@@ -186,7 +189,7 @@ public class IOFrame extends JFrame {
   void setTurnStateValue(int turnStateValue) {
     this.turnStateValue = turnStateValue;
     turnLabel.setText(turnState[turnStateValue]);
-    if(turnStateValue == 2){
+    if (turnStateValue == 2) {
       missionLabel.setText("Mission: Waiting...   |   ");
     }
   }
@@ -249,13 +252,27 @@ public class IOFrame extends JFrame {
     eachClientScore.revalidate();
     eachClientScore.repaint();
   }
-  public void updateMission(String mission){
-    missionLabel.setText("Mission: " + "'"+mission+"'" + "   |   ");
+
+  public void updateMission(String mission) {
+    missionLabel.setText("Mission: " + "'" + mission + "'" + "   |   ");
   }
-  public void updateLastChar(String lastChar){
-    lastCharLabel.setText("Last Char: " + "'"+lastChar+"'");
+
+  public void updateLastChar(String lastChar) {
+    lastCharLabel.setText("Last Char: " + "'" + lastChar + "'");
   }
+
   public void reset() {
     this.dispose();
+  }
+
+  public void disposeRanking() {
+    List<String> ranking = new ArrayList<>(clientScore.keySet());
+    ranking.sort((o1, o2) -> clientScore.get(o2).compareTo(clientScore.get(o1)));
+    pushRecordData("\n---Ranking---\n");
+    for (int i = 0; i < ranking.size(); i++) {
+      pushRecordData(
+          (i + 1) + "위: " + ranking.get(i) + ", " + clientScore.get(ranking.get(i)) + "점\n");
+    }
+    pushRecordData("----------------\n");
   }
 }

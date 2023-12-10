@@ -21,6 +21,7 @@ import org.example.game.TimerEvent;
 import org.example.game.Words;
 
 public class MySocketServer extends Thread {
+
   private static TimerEvent timerEvent;
 
   private static final ArrayList<Socket> list = new ArrayList<>();
@@ -119,8 +120,10 @@ public class MySocketServer extends Thread {
                   StandardCharsets.UTF_8);
               PrintWriter printWriter2 = new PrintWriter(outputStreamWriter2, true);
               printWriter2.println("Game Ended");
-              printWriter2.println("Loser : " + queue.getCurrentClientName());
-              if(timerEvent!=null)timerEvent.cancel();
+              //printWriter2.println("Loser : " + queue.getCurrentClientName());
+              if (timerEvent != null) {
+                timerEvent.cancel();
+              }
             }
             wordSetting.setIsTimeOver(false);
             wordSetting.setIsEnd(false);
@@ -152,14 +155,16 @@ public class MySocketServer extends Thread {
           PrintWriter printWriter3 = new PrintWriter(outputStreamWriter3, true);
           printWriter3.println("turn : " + queue.getCurrentClientName());
         }
-        if(readValue.equals("Reset")) {
+        if (readValue.equals("Reset")) {
           Game game = Game.getInstance();
-          ArrayList<Socket> temp=new ArrayList<>(list);
+          ArrayList<Socket> temp = new ArrayList<>(list);
           game.reset();
           queue.reset();
           wordSetting.reset();
-          if(timerEvent != null) timerEvent.cancel();
-          timerEvent=null;
+          if (timerEvent != null) {
+            timerEvent.cancel();
+          }
+          timerEvent = null;
           timer.cancel();
           names.reset();
           list.clear();
@@ -178,7 +183,9 @@ public class MySocketServer extends Thread {
           Game game = Game.getInstance();
           timer = new Timer();
           wordSetting.setRoundTime(wordSetting.getInitialRoundTime());
-          if(timerEvent != null) timerEvent.cancel();
+          if (timerEvent != null) {
+            timerEvent.cancel();
+          }
           timerEvent = new TimerEvent(wordSetting.getInitialRoundTime(), false, list);
           for (Socket value : list) {
             OutputStream outputStream2 = value.getOutputStream();
@@ -223,10 +230,10 @@ public class MySocketServer extends Thread {
           wordSetting.setFinalRound(Integer.parseInt(round));
           wordSetting.setRoundFlag(true);
           Random random = new Random();
-          ArrayList<String> words= db.selectWords(wordSetting.getFinalRound(), game.getLanguage()
+          ArrayList<String> words = db.selectWords(wordSetting.getFinalRound(), game.getLanguage()
           );
-          String startWord= words.get(random.nextInt(words.size()));
-          while(startWord.matches(".*\\d+.*")){
+          String startWord = words.get(random.nextInt(words.size()));
+          while (startWord.matches(".*\\d+.*")) {
             startWord = words.get(random.nextInt(words.size()));
           }
           game.setStartWord(startWord);
@@ -286,8 +293,10 @@ public class MySocketServer extends Thread {
                   "Score: " + game.getScore(name) + " Name: " + name);//Maybe here is error
               game.setMission(false);
               writer2.print("Mean :");
-              if(means.isEmpty()) writer2.println("Api can't find the mean");
-              for(String mean : means){
+              if (means.isEmpty()) {
+                writer2.println("Api can't find the mean");
+              }
+              for (String mean : means) {
                 writer2.println(mean);
               }
               writer2.println("Last Char : " + game.getLastChar());
